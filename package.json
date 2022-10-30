@@ -13,11 +13,10 @@
     "@headlessui/vue": "^1.7.3",
     "@heroicons/vue": "^2.0.12",
     "vue": "^3.2.41",
-    "vue-multiselect": "^3.0.0-alpha.2",
-    "vue-router": "^4.1.6",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
+    "@babel/types": "^7.20.0",
     "@typescript-eslint/eslint-plugin": "^5.41.0",
     "@typescript-eslint/parser": "^5.41.0",
     "@vitejs/plugin-vue": "^3.2.0",

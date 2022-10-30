@@ -6,12 +6,5 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: [{ find: "@", replacement: "/src" }],
-  },
-  server: {
-    proxy: {
-      "/api.php": {
-        target: "http://localhost:3001",
-      },
-    },
-  },
+  }
 })

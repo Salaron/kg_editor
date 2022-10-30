@@ -1,0 +1,36 @@
+{
+  "name": "muhin.exe",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "deploy": "vue-tsc --noEmit && vite build --base '/dist/'",
+    "preview": "vite preview",
+    "format": "prettier --write .",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.vue"
+  },
+  "dependencies": {
+    "@headlessui/vue": "^1.7.3",
+    "@heroicons/vue": "^2.0.12",
+    "vue": "^3.2.41",
+    "vue-multiselect": "^3.0.0-alpha.2",
+    "vue-router": "^4.1.6",
+    "vuedraggable": "^4.1.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/parser": "^5.41.0",
+    "@vitejs/plugin-vue": "^3.2.0",
+    "autoprefixer": "^10.4.12",
+    "eslint": "^8.26.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-vue": "^9.6.0",
+    "postcss": "^8.4.18",
+    "prettier": "^2.7.1",
+    "tailwindcss": "^3.2.1",
+    "typescript": "^4.8.4",
+    "vite": "^3.2.0",
+    "vue-eslint-parser": "^9.1.0",
+    "vue-tsc": "^1.0.9"
+  }
+}

@@ -1,7 +1,8 @@
 import { Vector2 } from "@/core/vector2"
 import { defaultShapeProperties, ShapeProperties } from "@/core/shapeProperties"
 import { uuidv4 } from "@/util/uuid"
-import { calculateLineEquation } from "@/util/lineEquation"
+import { constructLineEquation } from "@/util/lineEquation"
+import { Rectangle } from "./rectangle"
 
 export abstract class Shape {
   public shapeId = uuidv4()
@@ -10,16 +11,16 @@ export abstract class Shape {
 
   // выбрана ли эта фигура нажатием ЛКМ
   public isSelected = false
+  // подсвечена ли фигура мышью
+  public isHovered = false
   public isMoving = false
-  // выбрана ли эта фигура фокусом мыши
 
   public properties: ShapeProperties = defaultShapeProperties
-  protected IsHovered = false
 
-  protected showPointCoordinages = true
+  // нужно ли отрисовывать координаты точек
+  public showPointCoordinates = true
   // нужно ли рисовать уравнение прямой(-ых) этой фигуры
-  protected showLineEquation = false
-
+  public showLineEquation = false
 
   // Точка, с которой движение начинается
   private startMovePoint: Vector2 | null = null
@@ -27,58 +28,43 @@ export abstract class Shape {
   private movePointIndex = -1
   // Координаты точек до перемещения
   private pointsBackup: Vector2[] = []
-
-  private HoveredPointIndex = -1
+  // точка, которую двигают
+  private hoveredPointIndex = -1
 
   abstract draw(ctx: CanvasRenderingContext2D): void
   abstract onMouseDown(coords: Vector2): void
   abstract onMouseMove(coords: Vector2): void
   abstract onMouseUp(coords: Vector2): void
+  //abstract onMouseAction(action: number, coord: Coord2d): void;
 
   constructor(properties: ShapeProperties) {
     this.properties = properties
   }
 
-  //abstract onMouseAction(action: number, coord: Coord2d): void;
+  public isHoveredByPoint(mouseCords: Vector2): boolean {
+    this.hoveredPointIndex = this.getPointIndexByCoord(mouseCords)
+    this.isHovered = this.isPointOnLine(mouseCords)
+    return this.hoveredPointIndex !== -1
+  }
 
-  public drawPointAnnotation(ctx: CanvasRenderingContext2D) {
-    if (!this.IsHovered && !this.isSelected && this.isDrawingFinished || !this.showPointCoordinages) {
-      return
-    }
-    for (const point of this.points) {
-      if (point == null)
-        return;
-      const convertedPoint = point.convertToScreen()
-      ctx.fillStyle = "#000000"
-      ctx.font = "24px serif"
-      ctx.fillText(`(${convertedPoint.x}; ${convertedPoint.y})`, point.x, point.y)
+  public isShapeInRectangle(rec: Rectangle) {
+    const point1 = rec.points[0]
+    const point2 = rec.points[2]
+
+    for (const shapePoint of this.points) {
+      if (point1.x < shapePoint.x && shapePoint.x < point2.x && point1.y < shapePoint.y && shapePoint.y < point2.y ||
+          point2.x < shapePoint.x && shapePoint.x < point1.x && point2.y < shapePoint.y && shapePoint.y < point1.y
+        )
+        return true;
     }
 
-    if (this.points.length === 2 && this.showLineEquation) {
-      for (let idx = 0; idx < this.points.length / 2; idx++) {
-        const eq = calculateLineEquation(
-          this.points[idx].convertToScreen(),
-          this.points[idx + 1].convertToScreen()
-        )
-        ctx.fillStyle = "#000000"
-        ctx.font = "24px serif"
-        ctx.fillText(
-          eq,
-          (this.points[idx].x + this.points[idx + 1].x) / 2,
-          (this.points[idx].y + this.points[idx + 1].y) / 2
-        )
-      }
-    }
+    return false;
   }
 
   public isPointOnLine(point: Vector2): boolean {
-    if (this.points.length % 2 === 1) {
-      return false
-    }
-
-    for (let idx = 0; idx < this.points.length / 2; idx += 2) {
+    for (let idx = 0; idx < this.points.length; idx++) {
       const lineStart = this.points[idx]
-      const lineEnd = this.points[idx + 1]
+      const lineEnd = this.points[(idx + 1) % this.points.length]
       const maxDelta = this.properties.lineWidth / 10 + 0.5
 
       const startToCoord = lineStart.distance(point)
@@ -92,35 +78,6 @@ export abstract class Shape {
     }
 
     return false
-  }
-
-  public isHovered(coord: Vector2): boolean {
-    this.HoveredPointIndex = this.getPointIndexByCoord(coord)
-    this.IsHovered = this.isPointOnLine(coord)
-    return this.HoveredPointIndex !== -1
-  }
-
-  public drawHoveredPoint(ctx: CanvasRenderingContext2D) {
-    if (this.HoveredPointIndex !== -1) {
-      const point = this.points[this.HoveredPointIndex]
-      ctx.beginPath()
-      ctx.arc(point.x, point.y, 5, 0, 2 * Math.PI, false)
-
-      ctx.fillStyle = this.properties.hoverColor
-      ctx.fill()
-      ctx.closePath()
-    }
-  }
-
-  // Получение индекса точки по указаным координатам
-  public getPointIndexByCoord(coord: Vector2) {
-    for (let i = 0; i < this.points.length; i++) {
-      const dist = this.points[i].distance(coord)
-      if (dist < 5) {
-        return i
-      }
-    }
-    return -1
   }
 
   public beginMove(startPoint: Vector2) {
@@ -152,5 +109,59 @@ export abstract class Shape {
   public endMove() {
     this.isMoving = false
     this.startMovePoint === null
+  }
+
+  // Получение индекса точки по указаным координатам
+  protected getPointIndexByCoord(coord: Vector2) {
+    for (let i = 0; i < this.points.length; i++) {
+      const dist = this.points[i].distance(coord)
+      if (dist < 5) {
+        return i
+      }
+    }
+    return -1
+  }
+
+  protected drawHoveredPoint(ctx: CanvasRenderingContext2D) {
+    if (this.hoveredPointIndex !== -1) {
+      const point = this.points[this.hoveredPointIndex]
+      ctx.beginPath()
+      ctx.arc(point.x, point.y, 5, 0, 2 * Math.PI, false)
+
+      ctx.fillStyle = this.properties.hoverColor
+      ctx.fill()
+      ctx.closePath()
+    }
+  }
+
+  protected drawPointCoordinates(ctx: CanvasRenderingContext2D) {
+    if (!this.isHovered && !this.isSelected && this.isDrawingFinished || !this.showPointCoordinates)
+      return
+
+    for (const point of this.points) {
+      if (point == null)
+        return
+
+      const convertedPoint = point.convertToScreen()
+      ctx.fillStyle = "#000000"
+      ctx.font = `${15 + 3 * this.properties.lineWidth}px serif`
+      ctx.fillText(`(${convertedPoint.x}; ${convertedPoint.y})`, point.x, point.y)
+    }
+
+    if (this.showLineEquation) {
+      for (let idx = 0; idx < this.points.length / 2; idx++) {
+        const eq = constructLineEquation(
+          this.points[idx].convertToScreen(),
+          this.points[idx + 1].convertToScreen()
+        )
+        ctx.fillStyle = "#000000"
+        ctx.font = `${15 + 3 * this.properties.lineWidth}px serif`
+        ctx.fillText(
+          eq,
+          (this.points[idx].x + this.points[idx + 1].x) / 2,
+          (this.points[idx].y + this.points[idx + 1].y) / 2
+        )
+      }
+    }
   }
 }

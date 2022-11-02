@@ -20,10 +20,12 @@ const operationsDefaultValue = [
     id: 0,
     name: "Смещение",
     param1: {
+      type: "text",
       text: "Смещение по X",
       value: "0"
     },
     param2: {
+      type: "text",
       text: "Смещение по Y",
       value: "0"
     }
@@ -32,10 +34,12 @@ const operationsDefaultValue = [
     id: 1,
     name: "Масштабирование",
     param1: {
+      type: "text",
       text: "Масштабирование по X",
       value: "1"
     },
     param2: {
+      type: "text",
       text: "Масштабирование по Y",
       value: "1"
     }
@@ -44,8 +48,23 @@ const operationsDefaultValue = [
     id: 2,
     name: "Поворот",
     param1: {
-      text: "Радиус поворота относительно центра координат",
+      type: "text",
+      text: "Угол поворота относительно центра координат",
       value: "0"
+    }
+  },
+  {
+    id: 3,
+    name: "Зеркалирование",
+    param1: {
+      type: "checkbox",
+      text: "Зеркалирование относительно прямой х = 0",
+      value: false
+    },
+    param2: {
+      type: "checkbox",
+      text: "Зеркалирование относительно прямой y = 0",
+      value: false
     }
   }
 ]
@@ -108,13 +127,16 @@ function applyOperations(shapes: Shape[]): Shape[] {
 
     for (const operation of operations.value) {
       if (operation.id === 0)
-        operationBuilder.transfer(parseInt(operation.param1.value), parseInt(operation.param2!.value))
+        operationBuilder.transfer(parseInt(operation.param1.value as string), parseInt(operation.param2!.value as string))
 
       if (operation.id === 1)
-        operationBuilder.scale(parseFloat(operation.param1.value), parseFloat(operation.param2!.value))
+        operationBuilder.scale(parseFloat(operation.param1.value as string), parseFloat(operation.param2!.value as string))
 
       if (operation.id === 2)
-        operationBuilder.rotate(parseInt(operation.param1.value))
+        operationBuilder.rotate(parseInt(operation.param1.value as string))
+
+      if (operation.id === 3)
+        operationBuilder.mirror(operation.param2!.value as boolean, operation.param1.value as boolean)
     }
     shape.properties = new ShapeProperties("#00ff00", shape.properties.lineWidth + 1, shape.properties.fillColorHex, shape.properties.alpha)
     shape.points = originalPoints.morphing(operationBuilder.finish(), morphing.value).convertToSystem().round().finish()
@@ -174,16 +196,16 @@ defineExpose({ openOperationsDialog })
               <label class="block mb-2 text-base font-medium text-gray-900">{{
                   element.param1.text
               }}</label>
-              <input type="text"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+              <input :type="element.param1.type"
+                :class='[element.param1.type === "text" ? "bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" : ""]'
                 v-model="element.param1.value">
 
               <div v-if="element.param2" class="mt-2">
                 <label class="block mb-2 text-base font-medium text-gray-900">{{
                     element.param2.text
                 }}</label>
-                <input type="text"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                <input :type="element.param2.type"
+                  :class='[element.param2.type === "text" ? "bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" : ""]'
                   v-model="element.param2.value">
               </div>
             </template>

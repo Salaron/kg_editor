@@ -97,5 +97,18 @@ export class Operations {
 
     return this
   }
+
+  public mirror(mirrorX: boolean, mirrorY: boolean) {
+    for (let i = 0; i < this.points.length; i++) {
+      const point = this.points[i]
+
+      const x = point.x * (mirrorX ? -1: 1)
+      const y = point.y * (mirrorY ? -1: 1)
+      
+      this.points[i] = new Vector2(x, y)
+    }
+
+    return this
+  }
 }
 

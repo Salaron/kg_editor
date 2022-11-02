@@ -89,15 +89,12 @@ export class ShapeManager {
 
       this.context.clearRect(-this.canvasWidth, -this.canvasHeight, this.canvasWidth * 2, this.canvasHeight * 2)
 
-      this.shapes.map((shape) => {
+      for (const shape of this.shapes) {
         shape.draw(this.context)
-        shape.drawHoveredPoint(this.context)
-        shape.drawPointAnnotation(this.context)
-      })
-      if (this.drawingShape) {
-        this.drawingShape.draw(this.context)
-        this.drawingShape.drawPointAnnotation(this.context)
       }
+
+      if (this.drawingShape)
+        this.drawingShape.draw(this.context)
 
       if (this.options.onUpdate)
         this.options.onUpdate(this.context)
@@ -136,20 +133,41 @@ export class ShapeManager {
   }
 
   public onMouseMove(mouseCoords: Vector2) {
-    this.shapes.map((shape) => {
-      shape.isHovered(mouseCoords)
-    })
-    if (this.drawingShape) {
-      this.drawingShape.onMouseMove(mouseCoords)
+    for (const shape of this.shapes) {
+      shape.isHoveredByPoint(mouseCoords)
     }
+
+    if (this.drawingShape)
+      this.drawingShape.onMouseMove(mouseCoords)
 
     if (this.workingMode === EditorMode.Selecting) {
       for (const focusedShape of this.focusedShapes) {
         focusedShape.move(mouseCoords)
       }
 
-      if (this.drawingShape)
-        this.drawingShape.onMouseMove(mouseCoords)
+      if (this.drawingShape) {
+        for (const focusedShape of this.focusedShapes) {
+          focusedShape.isSelected = false
+        }
+        const focusedShapes = new Set<Shape>()
+        for (const shape of this.shapes) {
+          if (shape.isShapeInRectangle(this.drawingShape as Rectangle)) {
+            focusedShapes.add(shape)
+            shape.isSelected = true
+          }
+        }
+        this.focusedShapes = focusedShapes
+      }
+
+      if (this.options.onShapeSelectedStatus)
+        this.options.onShapeSelectedStatus(this.focusedShapes.size !== 0)
+
+      let properties = this.defaultProperties
+      if (this.focusedShapes.size > 0)
+        properties = [...this.focusedShapes][0].properties
+
+      if (this.options.onShapePropertiesChanged)
+        this.options.onShapePropertiesChanged(deepClone(properties))
     }
 
     if (this.options.onStatusMouseMove)
@@ -178,7 +196,7 @@ export class ShapeManager {
 
     if (this.workingMode === EditorMode.Selecting) {
       this.shapes.map((shape) => {
-        const hovered = shape.isPointOnLine(mouseCoords) || shape.isHovered(mouseCoords)
+        const hovered = shape.isPointOnLine(mouseCoords) || shape.isHoveredByPoint(mouseCoords)
         if (hovered) {
           this.focusedShapes.add(shape)
           shape.isSelected = true
@@ -203,17 +221,8 @@ export class ShapeManager {
       if (this.focusedShapes.size === 0) {
         const selectProps = new ShapeProperties("#0000ff", 2, "#0000ff", "0.5")
         this.drawingShape = new Rectangle(selectProps, mouseCoords)
+        this.drawingShape.showPointCoordinates = false
       }
-        
-      if (this.options.onShapeSelectedStatus)
-        this.options.onShapeSelectedStatus(this.focusedShapes.size !== 0)
-
-      let properties = this.defaultProperties
-      if (this.focusedShapes.size > 0)
-        properties = [...this.focusedShapes][0].properties
-
-      if (this.options.onShapePropertiesChanged)
-        this.options.onShapePropertiesChanged(deepClone(properties))
     }
   }
 

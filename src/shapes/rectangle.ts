@@ -17,12 +17,15 @@ export class Rectangle extends Shape {
     }
     ctx.closePath()
 
-    ctx.strokeStyle = this.IsHovered || this.isSelected ? this.properties.hoverColor : this.properties.shapeColor
+    ctx.strokeStyle = this.isHovered || this.isSelected ? this.properties.hoverColor : this.properties.shapeColor
     ctx.lineWidth = this.properties.lineWidth
     ctx.stroke()
 
     ctx.fillStyle = this.properties.fillColorRgba
     ctx.fill()
+
+    this.drawHoveredPoint(ctx)
+    this.drawPointCoordinates(ctx)
   }
 
   public onMouseDown(coords: Vector2): void {
@@ -34,7 +37,7 @@ export class Rectangle extends Shape {
     this.updatePoints(this.points[0], coords)
   }
 
-  public onMouseUp(coords: Vector2): void {}
+  public onMouseUp(coords: Vector2): void { }
 
   private updatePoints(start: Vector2, end: Vector2) {
     this.points = [start, new Vector2(end.x, start.y), end, new Vector2(start.x, end.y)]

@@ -148,7 +148,7 @@ function onSave() {
   morphing.value = 1
   const result = applyOperations(originalShapes)
 
-  emit('operationDialogClosed', result)
+  emit("operationDialogClosed", result)
   dispose()
   dialog.value?.close()
 }
@@ -184,29 +184,27 @@ defineExpose({ openOperationsDialog })
       <CanvasComponent ref="operationsCanvasComponent" :style="{ height: height + 'px' }" />
 
       <label>Превью</label>
-      <input type="range" min="0" max="1" step="0.01" class="ml-2" v-model="morphing" />
+      <input v-model="morphing" type="range" min="0" max="1" step="0.01" class="ml-2" />
 
-      <draggable class="list-group" :component-data="{
+      <draggable v-bind="dragOptions" v-model="operations" class="list-group" :component-data="{
         type: 'transition-group',
         name: !drag ? 'flip-list' : null
-      }" v-bind="dragOptions" @start="drag = true" @end="drag = false" v-model="operations" item-key="id">
+      }" item-key="id" @start="drag = true" @end="drag = false">
         <template #item="{ element }">
           <Accordion :title="element.name">
             <template #body>
               <label class="block mb-2 text-base font-medium text-gray-900">{{
                   element.param1.text
               }}</label>
-              <input :type="element.param1.type"
-                :class='[element.param1.type === "text" ? "bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" : ""]'
-                v-model="element.param1.value">
+              <input v-model="element.param1.value" :type="element.param1.type"
+                :class='[element.param1.type === "text" ? "bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" : ""]'>
 
               <div v-if="element.param2" class="mt-2">
                 <label class="block mb-2 text-base font-medium text-gray-900">{{
                     element.param2.text
                 }}</label>
-                <input :type="element.param2.type"
-                  :class='[element.param2.type === "text" ? "bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" : ""]'
-                  v-model="element.param2.value">
+                <input v-model="element.param2.value" :type="element.param2.type"
+                  :class='[element.param2.type === "text" ? "bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" : ""]'>
               </div>
             </template>
           </Accordion>

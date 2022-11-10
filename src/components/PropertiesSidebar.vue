@@ -37,23 +37,23 @@ defineExpose({ updateShapePoints, updateShapeProperty, updateShapeSelectedStatus
 
     <div class="param">
       <div>Цвет фигур</div>
-      <input type="color" v-model="currentValues.shapeColor">
+      <input v-model="currentValues.shapeColor" type="color">
     </div>
 
     <div class="param">
       <div>Цвет заливки</div>
-      <input type="color" v-model="currentValues._fillColorHex">
+      <input v-model="currentValues._fillColorHex" type="color">
     </div>
 
     <div class="param">
       <div>Прозрачность заливки</div>
-      <input type="range" min="0" max="1" step="0.1" v-model="currentValues.alpha">
+      <input v-model="currentValues.alpha" type="range" min="0" max="1" step="0.1">
     </div>
 
     <div class="param">
       <div>Толщина линии</div>
-      <input class="bg-gray-50 border border-gray-300 rounded-lg w-full block" type="number" min="1"
-        v-model="currentValues.lineWidth">
+      <input v-model="currentValues.lineWidth" class="bg-gray-50 border border-gray-300 rounded-lg w-full block"
+        type="number" min="1">
     </div>
 
     <div class="param">
@@ -64,12 +64,14 @@ defineExpose({ updateShapePoints, updateShapeProperty, updateShapeSelectedStatus
     <div class="param">
       <button
         class="w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-cyan-500 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-cyan-500 disabled:opacity-25 hover:bg-cyan-400"
-        :disabled="!isShapeSelected || points.length < 0  || (points.length > 0 && points[0].length < 4)" @click="$emit('createSpline')">Создать сплайн</button>
+        :disabled="!isShapeSelected || points.length < 0  || (points.length > 0 && points[0].length < 4)"
+        @click="$emit('createSpline')">Создать сплайн</button>
     </div>
     <div class="param">
       <button
         class="w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-cyan-500 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-cyan-500 disabled:opacity-25 hover:bg-cyan-400"
-        :disabled="points.length === 0  || points.length < 2 || (points.length > 1 && points[0].length !== points[1].length)" @click="$emit('morphing')">Морфинг</button>
+        :disabled="points.length === 0  || points.length < 2 || (points.length > 1 && points[0].length !== points[1].length)"
+        @click="$emit('morphing')">Морфинг</button>
     </div>
     <div class="param">
       <button
@@ -87,8 +89,8 @@ defineExpose({ updateShapePoints, updateShapeProperty, updateShapeSelectedStatus
       <div class="heading">Точки</div>
       <div v-for="pp of points">
         <div v-for="point in pp">
-          <input type="number" v-model="point.x">
-          <input type="number" v-model="point.y">
+          <input v-model="point.x" type="number">
+          <input v-model="point.y" type="number">
         </div>
       </div>
     </div>

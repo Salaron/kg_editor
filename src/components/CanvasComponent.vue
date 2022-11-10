@@ -50,7 +50,7 @@ defineExpose({ initialize, getCanvasElement, waitMounted })
 </script>
 
 <template>
-  <canvas class="canvas" ref="canvas" oncontextmenu="return false;"></canvas>
+  <canvas ref="canvas" class="canvas" oncontextmenu="return false;"></canvas>
 </template>
 
 <style scoped>

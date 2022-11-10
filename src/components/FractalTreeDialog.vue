@@ -65,7 +65,7 @@ const emit = defineEmits(["fractalTreeDialogClosed"])
 
 function onSave() {
   dispose()
-  emit('fractalTreeDialogClosed')
+  emit("fractalTreeDialogClosed")
   dialog.value?.close()
 }
 
@@ -129,7 +129,6 @@ function adjustToScreen() {
 }
 
 function dispose() {
-  console.log('lets free memory')
   fractalComponents = []
   shapeManager?.dispose()
   shapeManager = null
@@ -148,37 +147,32 @@ defineExpose({ openFractalTreeDialog })
       <Accordion class="header" :title="'Глубина'">
         <template #body>
           <label class="block mb-2 text-base font-medium text-gray-900">Глубина дерева</label>
-          <input type="text" min="1" max="11"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            v-model="treeParams.deep">
+          <input v-model="treeParams.deep" type="text" min="1" max="11"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
         </template>
       </Accordion>
 
       <Accordion class="header" :title="'Углы ветвей'">
         <template #body>
           <label class="block mb-2 text-base font-medium text-gray-900">Угол левой ветви</label>
-          <input type="text"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            v-model="treeParams.angle.first">
+          <input v-model="treeParams.angle.first" type="text"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
 
           <label class="block mb-2 text-base font-medium text-gray-900">Угол правой ветви</label>
-          <input type="text"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            v-model="treeParams.angle.second">
+          <input v-model="treeParams.angle.second" type="text"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
         </template>
       </Accordion>
 
       <Accordion class="header" :title="'Скейлинг'">
         <template #body>
           <label class="block mb-2 text-base font-medium text-gray-900">Скейлинг левой ветви</label>
-          <input type="text"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            v-model="treeParams.scale.first">
+          <input v-model="treeParams.scale.first" type="text"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
 
           <label class="block mb-2 text-base font-medium text-gray-900">Скейлинг правой ветви</label>
-          <input type="text"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            v-model="treeParams.scale.second">
+          <input v-model="treeParams.scale.second" type="text"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
         </template>
       </Accordion>
     </template>

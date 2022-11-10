@@ -104,7 +104,7 @@ export class ShapeManager {
 
       if (this.options.onPointChanged) {
         if (JSON.stringify([...this.focusedShapes]) !== this.lastFocusedJson) {
-          let points = []
+          const points = []
           for (const shape of [...this.focusedShapes]) {
             points.push(shape.points)
           }

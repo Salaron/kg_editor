@@ -68,7 +68,7 @@ function onSave() {
   const resultShape = deepClone(morphingShape)
   resultShape.points = new Operations(basePointsO).morphing(destPointsO, parseFloat(morphing.value)).round().finish()
 
-  emit('morphingDialogClosed', resultShape)
+  emit("morphingDialogClosed", resultShape)
   dispose()
   dialog.value?.close()
 }
@@ -97,7 +97,7 @@ defineExpose({ openMorphingDialog })
       <CanvasComponent ref="morphingCanvasComponent" :style="{ height: height + 'px' }" />
 
       <label>Морфинг</label>
-      <input type="range" min="0" max="1" step="0.01" class="ml-2" v-model="morphing" />
+      <input v-model="morphing" type="range" min="0" max="1" step="0.01" class="ml-2" />
     </template>
   </ModalDialog>
 </template>

@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import CanvasComponent from "@/components/CanvasComponent.vue"
+import FractalTreeDialog from "@/components/FractalTreeDialog.vue"
+import MorphingDialog from "@/components/MorphingDialog.vue"
+import OperationsDialog from "@/components/OperationsDialog.vue"
 import PropertiesSidebar from "@/components/PropertiesSidebar.vue"
 import StatusBar from "@/components/StatusBar.vue"
 import ToolBar from "@/components/ToolBar.vue"
-import OperationsDialog from "@/components/OperationsDialog.vue"
 import { EditorMode } from "@/core/editorMode"
+import { Operations } from "@/core/operations"
 import { ShapeManager } from "@/core/shapeManager"
 import { ShapeProperties } from "@/core/shapeProperties"
 import { Vector2 } from "@/core/vector2"
-import { Shape } from "@/shapes/shape"
-import { onMounted, ref } from "vue"
-import { deepClone } from "@/util/object"
-import FractalTree from "@/components/FractalTree.vue"
 import { Polygon } from "@/shapes/polygon"
+import { Shape } from "@/shapes/shape"
+import { deepClone } from "@/util/object"
+import { onMounted, ref } from "vue"
 
 const height = ref(innerHeight * 0.9)
 
@@ -21,8 +23,8 @@ const mainCanvasComponent = ref<InstanceType<typeof CanvasComponent> | null>(nul
 const statusBarComponent = ref<InstanceType<typeof StatusBar> | null>(null)
 const propertiesComponent = ref<InstanceType<typeof PropertiesSidebar> | null>(null)
 const operationsDialogComponent = ref<InstanceType<typeof OperationsDialog> | null>(null)
-const fractalTreeDialogComponent = ref<InstanceType<typeof FractalTree> | null>(null)
-
+const fractalTreeDialogComponent = ref<InstanceType<typeof FractalTreeDialog> | null>(null)
+const morphingDialogComponent = ref<InstanceType<typeof MorphingDialog> | null>(null)
 
 let shapeManager: ShapeManager | null = null
 onMounted(() => {
@@ -114,6 +116,23 @@ async function openFractalTreeDialog() {
   await fractalTreeDialogComponent.value.openFractalTreeDialog()
 }
 
+async function openMorphingDialog() {
+  if (!morphingDialogComponent.value || !shapeManager || !mainCanvasComponent.value)
+    return
+
+  const canvasElement = mainCanvasComponent.value.getCanvasElement()
+  const shapesCopy = deepClone([...shapeManager.focusedShapes])
+
+  await morphingDialogComponent.value.openMorphingDialog(canvasElement.offsetWidth, height.value, shapesCopy[0], shapesCopy[1])
+}
+
+function morphingDialogClosed(morphingShape: Shape) {
+  if (!shapeManager)
+    return
+
+  shapeManager.shapes.push(morphingShape)
+}
+
 // remove text selection on double click
 document.addEventListener("mousedown", function (event) {
   if (event.detail > 1) {
@@ -124,7 +143,9 @@ document.addEventListener("mousedown", function (event) {
 
 <template>
   <OperationsDialog ref="operationsDialogComponent" @operation-dialog-closed="operationDialogClosed" />
-  <FractalTree ref="fractalTreeDialogComponent" />
+  <FractalTreeDialog ref="fractalTreeDialogComponent" />
+  <MorphingDialog ref="morphingDialogComponent" @morphing-dialog-closed="morphingDialogClosed" />
+
 
   <div class="mainContainer pl-2 pr-2">
     <ToolBar @clear-canvas="clearCanvas" @on-mode-change="onModeChange" @on-tool-change="onToolChange" />
@@ -132,7 +153,7 @@ document.addEventListener("mousedown", function (event) {
       <CanvasComponent ref="mainCanvasComponent" />
       <PropertiesSidebar ref="propertiesComponent" @open-operations="openOperationsDialog"
         @open-fractal-tree="openFractalTreeDialog" @shape-properties-changed="shapePropertiesChanged"
-        @remove-selected="removeSelected" @create-spline="createSpline" />
+        @remove-selected="removeSelected" @create-spline="createSpline" @morphing="openMorphingDialog" />
     </div>
 
     <StatusBar ref="statusBarComponent" />

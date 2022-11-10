@@ -8,7 +8,7 @@ const points: Ref<Vector2[][]> = ref([])
 const currentValues = ref(defaultShapeProperties.createCopy())
 const isShapeSelected = ref(false)
 
-const emit = defineEmits(["openOperations", "removeSelected", "shapePropertiesChanged", "shapePointChanged", "openFractalTree", "createSpline"])
+const emit = defineEmits(["openOperations", "removeSelected", "shapePropertiesChanged", "shapePointChanged", "openFractalTree", "createSpline", "morphing"])
 
 watch(currentValues, () => {
   emit("shapePropertiesChanged", currentValues.value.createCopy())
@@ -65,6 +65,11 @@ defineExpose({ updateShapePoints, updateShapeProperty, updateShapeSelectedStatus
       <button
         class="w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-cyan-500 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-cyan-500 disabled:opacity-25 hover:bg-cyan-400"
         :disabled="!isShapeSelected || points.length < 0  || (points.length > 0 && points[0].length < 4)" @click="$emit('createSpline')">Создать сплайн</button>
+    </div>
+    <div class="param">
+      <button
+        class="w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-cyan-500 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-cyan-500 disabled:opacity-25 hover:bg-cyan-400"
+        :disabled="points.length === 0  || points.length < 2 || (points.length > 1 && points[0].length !== points[1].length)" @click="$emit('morphing')">Морфинг</button>
     </div>
     <div class="param">
       <button

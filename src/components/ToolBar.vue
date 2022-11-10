@@ -3,7 +3,7 @@ import LineIcon from "@/components/icons/LineIcon.vue"
 import PolygonIcon from "@/components/icons/PolygonIcon.vue"
 import RectangleIcon from "@/components/icons/RectangleIcon.vue"
 import TriangleIcon from "@/components/icons/TriangleIcon.vue"
-import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/vue/24/solid"
+import { PencilIcon, PlusIcon, TrashIcon, ArrowDownIcon, ArrowUpIcon } from "@heroicons/vue/24/solid"
 
 import { EditorMode } from "@/core/editorMode"
 import { Line } from "@/shapes/line"
@@ -11,7 +11,7 @@ import { Polygon } from "@/shapes/polygon"
 import { Rectangle } from "@/shapes/rectangle"
 import { Triangle } from "@/shapes/triangle"
 
-const emit = defineEmits(["clearCanvas", "onToolChange", "onModeChange"])
+const emit = defineEmits(["clearCanvas", "onToolChange", "onModeChange", "saveConfig", "loadConfig"])
 function setActive(ev: MouseEvent, eventName: "clearCanvas" | "onToolChange" | "onModeChange", arg: any) {
   let selector = ".mode"
   if (eventName.indexOf("Mode") === -1) { selector = ".tool" }
@@ -52,14 +52,12 @@ function setActive(ev: MouseEvent, eventName: "clearCanvas" | "onToolChange" | "
     <div class="button" @click="$emit('clearCanvas')">
       <TrashIcon />
     </div>
-    <!--   <div v-if="false">
-      <div class="button">
-        <DownloadIcon />
-      </div>
-      <div class="button">
-        <UploadIcon />
-      </div>
-    </div> -->
+    <div class="button" @click="$emit('saveConfig')">
+      <ArrowDownIcon />
+    </div>
+    <div class="button" @click="$emit('loadConfig')">
+      <ArrowUpIcon />
+    </div>
   </div>
 </template>
 

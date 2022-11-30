@@ -6,15 +6,15 @@ import OperationsDialog from "@/components/OperationsDialog.vue"
 import PropertiesSidebar from "@/components/PropertiesSidebar.vue"
 import StatusBar from "@/components/StatusBar.vue"
 import ToolBar from "@/components/ToolBar.vue"
+import ThreeJsPortal from "@/components/ThreeJsPortal.vue"
 import { EditorMode } from "@/core/editorMode"
-import { Operations } from "@/core/operations"
 import { ShapeManager } from "@/core/shapeManager"
 import { ShapeProperties } from "@/core/shapeProperties"
 import { Vector } from "@/core/vector"
 import { Polygon } from "@/shapes/polygon"
 import { Shape } from "@/shapes/shape"
 import { deepClone } from "@/util/object"
-import { onMounted, ref } from "vue"
+import { onMounted, Ref, ref } from "vue"
 
 const height = ref(innerHeight * 0.9)
 
@@ -25,6 +25,8 @@ const propertiesComponent = ref<InstanceType<typeof PropertiesSidebar> | null>(n
 const operationsDialogComponent = ref<InstanceType<typeof OperationsDialog> | null>(null)
 const fractalTreeDialogComponent = ref<InstanceType<typeof FractalTreeDialog> | null>(null)
 const morphingDialogComponent = ref<InstanceType<typeof MorphingDialog> | null>(null)
+const threeJsPortalComponent: Ref<InstanceType<typeof ThreeJsPortal> | null> = ref(null)
+
 
 let shapeManager: ShapeManager | null = null
 onMounted(() => {
@@ -139,9 +141,22 @@ document.addEventListener("mousedown", function (event) {
     event.preventDefault()
   }
 })
+
+
+function toggle3d(state: boolean) {
+  if (!threeJsPortalComponent.value || !shapeManager)
+    return
+
+  if (state) {
+    threeJsPortalComponent!.value.openPortal(shapeManager)
+  } else {
+    threeJsPortalComponent!.value.closePortal()
+  }
+}
 </script>
 
 <template>
+  <ThreeJsPortal ref="threeJsPortalComponent" />
   <OperationsDialog ref="operationsDialogComponent" @operation-dialog-closed="operationDialogClosed" />
   <FractalTreeDialog ref="fractalTreeDialogComponent" />
   <MorphingDialog ref="morphingDialogComponent" @morphing-dialog-closed="morphingDialogClosed" />
@@ -153,7 +168,8 @@ document.addEventListener("mousedown", function (event) {
       <CanvasComponent ref="mainCanvasComponent" />
       <PropertiesSidebar ref="propertiesComponent" @open-operations="openOperationsDialog"
         @open-fractal-tree="openFractalTreeDialog" @shape-properties-changed="shapePropertiesChanged"
-        @remove-selected="removeSelected" @create-spline="createSpline" @morphing="openMorphingDialog" />
+        @remove-selected="removeSelected" @create-spline="createSpline" @morphing="openMorphingDialog"
+        @toggle3d="toggle3d" />
     </div>
 
     <StatusBar ref="statusBarComponent" />

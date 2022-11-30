@@ -3,7 +3,7 @@ import { ShapeProperties } from "@/core/shapeProperties"
 import { Shape } from "./shape"
 
 export class Line extends Shape {
-  public override showLineEquation = true
+  public override showLineEquation = false
 
   constructor(properties: ShapeProperties, start?: Vector, end?: Vector) {
     super(properties)

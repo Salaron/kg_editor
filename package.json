@@ -12,11 +12,13 @@
   "dependencies": {
     "@headlessui/vue": "^1.7.3",
     "@heroicons/vue": "^2.0.12",
+    "three": "^0.147.0",
     "vue": "^3.2.41",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@babel/types": "^7.20.0",
+    "@types/three": "^0.146.0",
     "@typescript-eslint/eslint-plugin": "^5.41.0",
     "@typescript-eslint/parser": "^5.41.0",
     "@vitejs/plugin-vue": "^3.2.0",

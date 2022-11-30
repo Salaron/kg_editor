@@ -4,6 +4,7 @@ import { Shape } from "@/shapes/shape"
 import { deepClone } from "@/util/object"
 import { uuidv4 } from "@/util/uuid"
 import { EditorMode } from "./editorMode"
+import { ProjectionMode } from "./projectionMode"
 import { defaultShapeProperties, ShapeProperties } from "./shapeProperties"
 import { Vector } from "./vector"
 
@@ -24,6 +25,7 @@ export class ShapeManager {
   public drawingShapeType: typeof Shape = Line
   public drawingShape: Shape | null = null
   public workingMode = EditorMode.Drawing
+  public static projectionMode = ProjectionMode.XY
   public canvasWidth!: number
   public canvasHeight!: number
 
@@ -256,7 +258,10 @@ export class ShapeManager {
     lineY.drawWithArrow(this.context)
     this.context.fillStyle = "#000000"
     this.context.font = "24px serif"
-    this.context.fillText("Y", 7, -this.canvasHeight / 2 + 30)
+    let upText = "Y"
+    if (ShapeManager.projectionMode !== ProjectionMode.XY)
+      upText = "Z"
+    this.context.fillText(upText, 7, -this.canvasHeight / 2 + 30)
 
     const lineX = new Line(
       props,
@@ -264,6 +269,9 @@ export class ShapeManager {
       new Vector(this.canvasWidth / 2, 0)
     )
     lineX.drawWithArrow(this.context)
-    this.context.fillText("X", this.canvasWidth / 2 - 35, 23)
+    let downText = "X"
+    if (ShapeManager.projectionMode === ProjectionMode.YZ)
+      downText = "Y"
+    this.context.fillText(downText, this.canvasWidth / 2 - 35, 23)
   }
 }

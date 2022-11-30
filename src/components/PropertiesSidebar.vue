@@ -1,5 +1,7 @@
 import { def } from '@vue/shared';
 <script setup lang="ts">
+import { ProjectionMode } from "@/core/projectionMode";
+import { ShapeManager } from "@/core/shapeManager";
 import { defaultShapeProperties, ShapeProperties } from "@/core/shapeProperties";
 import { Vector } from "@/core/vector";
 import { Ref, ref, watch } from "vue";
@@ -7,8 +9,10 @@ import { Ref, ref, watch } from "vue";
 const points: Ref<Vector[][]> = ref([])
 const currentValues = ref(defaultShapeProperties.createCopy())
 const isShapeSelected = ref(false)
+const projection = ref(ProjectionMode.XY)
+const toggle3d = ref(false)
 
-const emit = defineEmits(["openOperations", "removeSelected", "shapePropertiesChanged", "shapePointChanged", "openFractalTree", "createSpline", "morphing"])
+const emit = defineEmits(["openOperations", "removeSelected", "shapePropertiesChanged", "shapePointChanged", "openFractalTree", "createSpline", "morphing", "toggle3d"])
 
 watch(currentValues, () => {
   emit("shapePropertiesChanged", currentValues.value.createCopy())
@@ -16,6 +20,15 @@ watch(currentValues, () => {
 
 watch(points, () => {
   emit("shapePointChanged", points.value)
+})
+
+watch(projection, () => {
+  // @ts-ignore
+  ShapeManager.projectionMode = parseInt(projection.value)
+})
+
+watch(toggle3d, () => {
+  emit("toggle3d", toggle3d.value)
 })
 
 function updateShapeProperty(shapeProperty: ShapeProperties) {
@@ -34,6 +47,19 @@ defineExpose({ updateShapePoints, updateShapeProperty, updateShapeSelectedStatus
 <template>
   <div class="sidebar">
     <div class="heading">Свойства</div>
+
+    <div class="param">
+      <div>Плоскость</div>
+      <select v-model="projection">
+        <option value="0">XY</option>
+        <option value="1">XZ</option>
+      </select>
+    </div>
+
+    <div class="param">
+      <div>Отображать 3D</div>
+      <input type="checkbox" v-model="toggle3d">
+    </div>
 
     <div class="param">
       <div>Цвет фигур</div>
@@ -64,13 +90,13 @@ defineExpose({ updateShapePoints, updateShapeProperty, updateShapeSelectedStatus
     <div class="param">
       <button
         class="w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-cyan-500 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-cyan-500 disabled:opacity-25 hover:bg-cyan-400"
-        :disabled="!isShapeSelected || points.length < 0  || (points.length > 0 && points[0].length < 4)"
+        :disabled="!isShapeSelected || points.length < 0 || (points.length > 0 && points[0].length < 4)"
         @click="$emit('createSpline')">Создать сплайн</button>
     </div>
     <div class="param">
       <button
         class="w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-cyan-500 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-cyan-500 disabled:opacity-25 hover:bg-cyan-400"
-        :disabled="points.length === 0  || points.length < 2 || (points.length > 1 && points[0].length !== points[1].length)"
+        :disabled="points.length === 0 || points.length < 2 || (points.length > 1 && points[0].length !== points[1].length)"
         @click="$emit('morphing')">Морфинг</button>
     </div>
     <div class="param">
@@ -89,8 +115,9 @@ defineExpose({ updateShapePoints, updateShapeProperty, updateShapeSelectedStatus
       <div class="heading">Точки</div>
       <div v-for="pp of points">
         <div v-for="point in pp">
-          <input v-model="point.x" type="number">
-          <input v-model="point.y" type="number">
+          <input v-model="point.purePoints[0]" type="number">
+          <input v-model="point.purePoints[1]" type="number">
+          <input v-model="point.purePoints[2]" type="number">
         </div>
       </div>
     </div>

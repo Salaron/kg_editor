@@ -3,6 +3,9 @@ import { defaultShapeProperties, ShapeProperties } from "@/core/shapeProperties"
 import { uuidv4 } from "@/util/uuid"
 import { constructLineEquation } from "@/util/lineEquation"
 import { Rectangle } from "./rectangle"
+import * as THREE from "three"
+import { Line } from "./line"
+import { deepClone } from "@/util/object"
 
 export abstract class Shape {
   public shapeId = uuidv4()
@@ -18,7 +21,7 @@ export abstract class Shape {
   public properties: ShapeProperties = defaultShapeProperties
 
   // нужно ли отрисовывать координаты точек
-  public showPointCoordinates = true
+  public showPointCoordinates = false
   // нужно ли рисовать уравнение прямой(-ых) этой фигуры
   public showLineEquation = false
 
@@ -37,8 +40,25 @@ export abstract class Shape {
   abstract onMouseUp(coords: Vector): void
   //abstract onMouseAction(action: number, coord: Coord2d): void;
 
-  constructor(properties: ShapeProperties) {
+  protected constructor(properties: ShapeProperties) {
     this.properties = properties
+  }
+
+  public draw3d(scene: THREE.Scene) {
+    const material = new THREE.LineBasicMaterial({ color: this.isHovered || this.isSelected ? this.properties.hoverColor : this.properties.shapeColor, linewidth: this.properties.lineWidth })
+    const points = this.points.map(p => {
+      return new THREE.Vector3(p.purePoints[0], p.purePoints[1] * -1, p.purePoints[2])
+    })
+
+    const geometry = new THREE.BufferGeometry().setFromPoints(points)
+
+    let object = null
+    if (this instanceof Line)
+      object = new THREE.Line(geometry, material)
+    else
+      object = new THREE.LineLoop(geometry, material)
+
+    scene.add(object)
   }
 
   public isHoveredByPoint(mouseCords: Vector): boolean {
@@ -53,8 +73,8 @@ export abstract class Shape {
 
     for (const shapePoint of this.points) {
       if (point1.x < shapePoint.x && shapePoint.x < point2.x && point1.y < shapePoint.y && shapePoint.y < point2.y ||
-          point2.x < shapePoint.x && shapePoint.x < point1.x && point2.y < shapePoint.y && shapePoint.y < point1.y
-        )
+        point2.x < shapePoint.x && shapePoint.x < point1.x && point2.y < shapePoint.y && shapePoint.y < point1.y
+      )
         return true;
     }
 
@@ -82,7 +102,7 @@ export abstract class Shape {
 
   public beginMove(startPoint: Vector) {
     this.startMovePoint = startPoint
-    this.pointsBackup = JSON.parse(JSON.stringify(this.points))
+    this.pointsBackup = deepClone(this.points)
     this.movePointIndex = this.getPointIndexByCoord(startPoint)
     this.isMoving = true
   }
@@ -95,13 +115,15 @@ export abstract class Shape {
       for (let i = 0; i < this.points.length; i++) {
         this.points[i] = new Vector(
           this.pointsBackup[i].x + coord.x - this.startMovePoint.x,
-          this.pointsBackup[i].y + coord.y - this.startMovePoint.y
+          this.pointsBackup[i].y + coord.y - this.startMovePoint.y,
+          this.points[i].z
         )
       }
     } else {
       this.points[this.movePointIndex] = new Vector(
         this.pointsBackup[this.movePointIndex].x + coord.x - this.startMovePoint.x,
-        this.pointsBackup[this.movePointIndex].y + coord.y - this.startMovePoint.y
+        this.pointsBackup[this.movePointIndex].y + coord.y - this.startMovePoint.y,
+        this.points[this.movePointIndex].z
       )
     }
   }

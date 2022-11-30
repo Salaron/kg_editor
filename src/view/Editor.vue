@@ -10,7 +10,7 @@ import { EditorMode } from "@/core/editorMode"
 import { Operations } from "@/core/operations"
 import { ShapeManager } from "@/core/shapeManager"
 import { ShapeProperties } from "@/core/shapeProperties"
-import { Vector2 } from "@/core/vector2"
+import { Vector } from "@/core/vector"
 import { Polygon } from "@/shapes/polygon"
 import { Shape } from "@/shapes/shape"
 import { deepClone } from "@/util/object"
@@ -83,7 +83,7 @@ function createSpline() {
 
   const baseShape = [...shapeManager.focusedShapes][0]
 
-  const splinePolygon = new Polygon(new ShapeProperties("#ff00ff", baseShape.properties.lineWidth, "#000000", "1"), new Vector2(0, 0))
+  const splinePolygon = new Polygon(new ShapeProperties("#ff00ff", baseShape.properties.lineWidth, "#000000", "1"), new Vector(0, 0))
   splinePolygon.createSpline(baseShape.points)
 
   shapeManager.shapes.push(splinePolygon)

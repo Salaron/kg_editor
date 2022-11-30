@@ -4,7 +4,7 @@ import CanvasComponent from "@/components/CanvasComponent.vue"
 import ModalDialog from "@/components/ModalDialog.vue"
 import { ShapeManager } from "@/core/shapeManager"
 import { defaultShapeProperties } from "@/core/shapeProperties"
-import { Vector2 } from "@/core/vector2"
+import { Vector } from "@/core/vector"
 import { Line } from "@/shapes/line"
 import { deepClone } from "@/util/object"
 import { ref, watch } from "vue"
@@ -91,10 +91,10 @@ function init() {
 }
 
 function addBranch(x: number, y: number, direction: number, length: number, level: number) {
-  let point1 = new Vector2(x, y)
+  let point1 = new Vector(x, y)
   x += length * Math.cos(direction)
   y -= length * Math.sin(direction)
-  let point2 = new Vector2(x, y)
+  let point2 = new Vector(x, y)
 
   if (xMin > x) xMin = x
   if (xMax < x) xMax = x

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { Vector2 } from "@/core/vector2"
+import { Vector } from "@/core/vector"
 import { ref, watch } from "vue"
 
-const mouseCoords = ref(new Vector2(0, 0))
+const mouseCoords = ref(new Vector(0, 0))
 
-function update(newMouseCoords: Vector2) {
+function update(newMouseCoords: Vector) {
   mouseCoords.value = newMouseCoords
 }
 

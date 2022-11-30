@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ShapeManager } from "@/core/shapeManager";
-import { onMounted, onUnmounted, Ref, ref } from "vue";
+import { ShapeManager } from "@/core/shapeManager"
+import { onMounted, onUnmounted, Ref, ref } from "vue"
 
 const canvas: Ref<HTMLCanvasElement | null> = ref(null)
 let shapeManager: ShapeManager | null = null
@@ -41,7 +41,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   if (shapeManager === null)
-    return;
+    return
 
   window.removeEventListener("resize", shapeManager!.updateSize)
 })
@@ -55,9 +55,7 @@ defineExpose({ initialize, getCanvasElement, waitMounted })
 
 <style scoped>
 .canvas {
-  border: 1px solid;
-  border-color: black;
-  border-style: solid;
+  border: 1px solid black;
   background-color: rgb(255, 255, 255);
 }
 </style>

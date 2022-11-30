@@ -1,10 +1,10 @@
 import { def } from '@vue/shared';
 <script setup lang="ts">
 import { defaultShapeProperties, ShapeProperties } from "@/core/shapeProperties";
-import { Vector2 } from "@/core/vector2";
+import { Vector } from "@/core/vector";
 import { Ref, ref, watch } from "vue";
 
-const points: Ref<Vector2[][]> = ref([])
+const points: Ref<Vector[][]> = ref([])
 const currentValues = ref(defaultShapeProperties.createCopy())
 const isShapeSelected = ref(false)
 
@@ -21,7 +21,7 @@ watch(points, () => {
 function updateShapeProperty(shapeProperty: ShapeProperties) {
   currentValues.value = shapeProperty
 }
-function updateShapePoints(shapePoints: Vector2[][]) {
+function updateShapePoints(shapePoints: Vector[][]) {
   points.value = shapePoints
 }
 function updateShapeSelectedStatus(shapeSelected: boolean) {

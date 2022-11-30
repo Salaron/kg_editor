@@ -1,4 +1,4 @@
-import { Vector2 } from "../core/vector2"
+import { Vector } from "../core/vector"
 
 function gcd(a: number, b: number): number {
   if (!b) {
@@ -8,7 +8,7 @@ function gcd(a: number, b: number): number {
   return gcd(b, a % b);
 }
 
-export function constructLineEquation(point1: Vector2, point2: Vector2) {
+export function constructLineEquation(point1: Vector, point2: Vector) {
   let A: number = point1.y - point2.y
   let B: number = point2.x - point1.x
   let C: number = point1.x * point2.y - point1.y * point2.x

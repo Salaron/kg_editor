@@ -1,15 +1,15 @@
-import { Vector2 } from "@/core/vector2"
+import { Vector } from "@/core/vector"
 import { ShapeProperties } from "@/core/shapeProperties"
 import { Shape } from "./shape"
 
 export class Polygon extends Shape {
-  constructor(properties: ShapeProperties, start: Vector2, end?: Vector2) {
+  constructor(properties: ShapeProperties, start: Vector, end?: Vector) {
     super(properties)
     this.points.push(start)
     this.points.push(start)
   }
 
-  public createSpline(points: Vector2[]) {
+  public createSpline(points: Vector[]) {
     this.points = []
     this.isDrawingFinished = true
     this.showPointCoordinates = false
@@ -49,7 +49,7 @@ export class Polygon extends Shape {
           + points[(i + 3) % points.length].y) / 6;
 
       for (let t = 0; t < 1; t += 0.01) {
-        this.points.push(new Vector2(
+        this.points.push(new Vector(
           ((a3x * t + a2x) * t + a1x) * t + a0x,
           ((a3y * t + a2y) * t + a1y) * t + a0y,
         ))
@@ -76,15 +76,15 @@ export class Polygon extends Shape {
     this.drawPointCoordinates(ctx)
   }
 
-  public onMouseDown(coords: Vector2): void {
+  public onMouseDown(coords: Vector): void {
     this.points.push(coords)
   }
 
-  public onMouseMove(coords: Vector2): void {
+  public onMouseMove(coords: Vector): void {
     this.points[this.points.length - 1] = coords
   }
 
-  public onMouseUp(coords: Vector2): void {
+  public onMouseUp(coords: Vector): void {
     this.points[this.points.length - 1] = coords
   }
 }

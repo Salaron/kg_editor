@@ -1,11 +1,11 @@
-import { Vector2 } from "@/core/vector2"
+import { Vector } from "@/core/vector"
 import { ShapeProperties } from "@/core/shapeProperties"
 import { Shape } from "./shape"
 
 export class Line extends Shape {
   public override showLineEquation = true
 
-  constructor(properties: ShapeProperties, start?: Vector2, end?: Vector2) {
+  constructor(properties: ShapeProperties, start?: Vector, end?: Vector) {
     super(properties)
     this.points.push(start!)
     if (end) {
@@ -54,14 +54,14 @@ export class Line extends Shape {
     ctx.closePath()
   }
 
-  public onMouseDown(coords: Vector2): void {
+  public onMouseDown(coords: Vector): void {
     this.points[1] = coords
     this.isDrawingFinished = true
   }
 
-  public onMouseMove(coords: Vector2): void {
+  public onMouseMove(coords: Vector): void {
     this.points[1] = coords
   }
 
-  public onMouseUp(coords: Vector2): void { }
+  public onMouseUp(coords: Vector): void { }
 }

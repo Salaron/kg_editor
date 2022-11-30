@@ -1,10 +1,10 @@
-import { Vector2 } from "./vector2"
+import { Vector } from "./vector"
 
 
 export class Operations {
-  public points: Vector2[]
+  public points: Vector[]
 
-  constructor(basePoints: Vector2[]) {
+  constructor(basePoints: Vector[]) {
     this.points = basePoints
   }
 
@@ -37,7 +37,7 @@ export class Operations {
     return this.points
   }
 
-  public morphing(points2: Vector2[], value: number): Operations {
+  public morphing(points2: Vector[], value: number): Operations {
     if (this.points.length != points2.length)
       throw new Error("Invalid count of points")
 
@@ -48,7 +48,7 @@ export class Operations {
       const x = (1 - value) * point1.x + value * point2.x
       const y = (1 - value) * point1.y + value * point2.y
 
-      this.points[i] = new Vector2(x, y)
+      this.points[i] = new Vector(x, y)
     }
 
     return this
@@ -65,7 +65,7 @@ export class Operations {
       const x = point.x * cos - point.y * sin
       const y = point.x * sin + point.y * cos
 
-      this.points[i] = new Vector2(x, y)
+      this.points[i] = new Vector(x, y)
     }
 
     return this
@@ -79,7 +79,7 @@ export class Operations {
       const x = point.x * scaleX
       const y = point.y * scaleY
 
-      this.points[i] = new Vector2(x, y)
+      this.points[i] = new Vector(x, y)
     }
 
     return this
@@ -92,7 +92,7 @@ export class Operations {
       const x = point.x + transferX
       const y = point.y + transferY
 
-      this.points[i] = new Vector2(x, y)
+      this.points[i] = new Vector(x, y)
     }
 
     return this
@@ -105,7 +105,7 @@ export class Operations {
       const x = point.x * (mirrorX ? -1: 1)
       const y = point.y * (mirrorY ? -1: 1)
       
-      this.points[i] = new Vector2(x, y)
+      this.points[i] = new Vector(x, y)
     }
 
     return this

@@ -5,16 +5,16 @@ import { deepClone } from "@/util/object"
 import { uuidv4 } from "@/util/uuid"
 import { EditorMode } from "./editorMode"
 import { defaultShapeProperties, ShapeProperties } from "./shapeProperties"
-import { Vector2 } from "./vector2"
+import { Vector } from "./vector"
 
 export type ShapeManagerOptions = {
   noGrid?: boolean
   shapes?: Shape[]
   onUpdate?: (context: CanvasRenderingContext2D) => void
-  onStatusMouseMove?: (mouseCoords: Vector2) => void
+  onStatusMouseMove?: (mouseCoords: Vector) => void
   onShapeSelectedStatus?: (shapeSelected: boolean) => void
   onShapePropertiesChanged?: (properties: ShapeProperties) => void
-  onPointChanged?: (points: Vector2[][]) => void
+  onPointChanged?: (points: Vector[][]) => void
 }
 
 export class ShapeManager {
@@ -69,23 +69,24 @@ export class ShapeManager {
 
     this.canvasWidth = this.context.canvas.width
     this.canvasHeight = this.context.canvas.height
-    this.context.translate(this.canvasWidth / 2, this.canvasHeight / 2);
+    this.context.translate(this.canvasWidth / 2, this.canvasHeight / 2)
   }
 
   private lastTime = Date.now()
   private lastFocusedJson = ""
+
   public update() {
     if (!this.disposed)
       requestAnimationFrame(() => this.update())
 
-    const now = Date.now();
-    const elapsed = now - this.lastTime;
+    const now = Date.now()
+    const elapsed = now - this.lastTime
 
     // if enough time has elapsed, draw the next frame
     if (elapsed > 1000 / 75) {
       // Get ready for next frame by setting then=now, but also adjust for your
       // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
-      this.lastTime = now - (elapsed % (1000 / 75));
+      this.lastTime = now - (elapsed % (1000 / 75))
 
       this.context.clearRect(-this.canvasWidth, -this.canvasHeight, this.canvasWidth * 2, this.canvasHeight * 2)
 
@@ -117,7 +118,7 @@ export class ShapeManager {
 
   public onMouseAction(event: MouseEvent, actionType: number) {
     const boundingRect = this.context.canvas.getBoundingClientRect()
-    const coords = new Vector2(event.clientX - boundingRect.left - this.canvasWidth / 2, event.clientY - boundingRect.top - this.canvasHeight / 2)
+    const coords = new Vector(event.clientX - boundingRect.left - this.canvasWidth / 2, event.clientY - boundingRect.top - this.canvasHeight / 2)
 
     switch (actionType) {
       case 0:
@@ -132,7 +133,7 @@ export class ShapeManager {
     }
   }
 
-  public onMouseMove(mouseCoords: Vector2) {
+  public onMouseMove(mouseCoords: Vector) {
     for (const shape of this.shapes) {
       shape.isHoveredByPoint(mouseCoords)
     }
@@ -174,7 +175,7 @@ export class ShapeManager {
       this.options.onStatusMouseMove(mouseCoords.convertToScreen())
   }
 
-  public onMouseDown(mouseCoords: Vector2, buttonCode: number, ctrl = false, shift = false) {
+  public onMouseDown(mouseCoords: Vector, buttonCode: number, ctrl = false, shift = false) {
     if (shift === false) {
       for (const shape of this.shapes) {
         shape.isSelected = false
@@ -213,7 +214,7 @@ export class ShapeManager {
         this.focusedShapes.clear()
         newShapes.forEach(shape => {
           this.focusedShapes.add(shape)
-        });
+        })
       }
 
       this.focusedShapes.forEach(shape => shape.beginMove(mouseCoords))
@@ -226,7 +227,7 @@ export class ShapeManager {
     }
   }
 
-  public onMouseUp(mouseCoords: Vector2, buttonCode: number) {
+  public onMouseUp(mouseCoords: Vector, buttonCode: number) {
     if (this.workingMode === EditorMode.Drawing) {
       this.drawingShape?.onMouseUp(mouseCoords)
       if (this.drawingShape?.isDrawingFinished === true) {
@@ -249,8 +250,8 @@ export class ShapeManager {
 
     const lineY = new Line(
       props,
-      new Vector2(0, this.canvasHeight / 2),
-      new Vector2(0, -this.canvasHeight / 2)
+      new Vector(0, this.canvasHeight / 2),
+      new Vector(0, -this.canvasHeight / 2)
     )
     lineY.drawWithArrow(this.context)
     this.context.fillStyle = "#000000"
@@ -259,8 +260,8 @@ export class ShapeManager {
 
     const lineX = new Line(
       props,
-      new Vector2(-this.canvasWidth / 2, 0),
-      new Vector2(this.canvasWidth / 2, 0)
+      new Vector(-this.canvasWidth / 2, 0),
+      new Vector(this.canvasWidth / 2, 0)
     )
     lineX.drawWithArrow(this.context)
     this.context.fillText("X", this.canvasWidth / 2 - 35, 23)

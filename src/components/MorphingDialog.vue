@@ -4,7 +4,7 @@ import ModalDialog from "@/components/ModalDialog.vue"
 import { Operations } from "@/core/operations"
 import { ShapeManager } from "@/core/shapeManager"
 import { ShapeProperties } from "@/core/shapeProperties"
-import { Vector2 } from "@/core/vector2"
+import { Vector } from "@/core/vector"
 import { Shape } from "@/shapes/shape"
 import { deepClone } from "@/util/object"
 import { ref, watch } from "vue"
@@ -17,10 +17,10 @@ const morphingCanvasComponent = ref<InstanceType<typeof CanvasComponent> | null>
 let morphing = ref("0")
 let shapeManager: ShapeManager | null = null
 let morphingShape: Shape | null = null
-let basePointsO: Vector2[] = []
-let destPointsO: Vector2[] = []
-let basePoints: Vector2[] = []
-let destinationPoints: Vector2[] = []
+let basePointsO: Vector[] = []
+let destPointsO: Vector[] = []
+let basePoints: Vector[] = []
+let destinationPoints: Vector[] = []
 function drawMorphingShape(context: CanvasRenderingContext2D) {
   if (!shapeManager || !morphingShape)
     return

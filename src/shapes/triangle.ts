@@ -1,9 +1,9 @@
-import { Vector2 } from "@/core/vector2"
+import { Vector } from "@/core/vector"
 import { ShapeProperties } from "@/core/shapeProperties"
 import { Shape } from "./shape"
 
 export class Triangle extends Shape {
-  constructor(properties: ShapeProperties, start: Vector2) {
+  constructor(properties: ShapeProperties, start: Vector) {
     super(properties)
     this.points.push(start)
     this.points.push(start)
@@ -29,14 +29,14 @@ export class Triangle extends Shape {
     this.drawPointCoordinates(ctx)
   }
 
-  public onMouseDown(coords: Vector2): void { }
+  public onMouseDown(coords: Vector): void { }
 
-  public onMouseMove(coords: Vector2): void {
+  public onMouseMove(coords: Vector): void {
     this.points[this.points.length - 1] = coords
   }
 
   private isFirstPointReleased = false
-  public onMouseUp(coords: Vector2): void {
+  public onMouseUp(coords: Vector): void {
     if (this.isFirstPointReleased === false) {
       this.isFirstPointReleased = true
       return

@@ -1,4 +1,4 @@
-import { Vector2 } from "@/core/vector2"
+import { Vector } from "@/core/vector"
 import { defaultShapeProperties, ShapeProperties } from "@/core/shapeProperties"
 import { uuidv4 } from "@/util/uuid"
 import { constructLineEquation } from "@/util/lineEquation"
@@ -7,7 +7,7 @@ import { Rectangle } from "./rectangle"
 export abstract class Shape {
   public shapeId = uuidv4()
   public isDrawingFinished = false
-  public points: Vector2[] = []
+  public points: Vector[] = []
 
   // выбрана ли эта фигура нажатием ЛКМ
   public isSelected = false
@@ -23,25 +23,25 @@ export abstract class Shape {
   public showLineEquation = false
 
   // Точка, с которой движение начинается
-  private startMovePoint: Vector2 | null = null
+  private startMovePoint: Vector | null = null
   // Номер точки, которую нужно перемещать (если -1, то все)
   private movePointIndex = -1
   // Координаты точек до перемещения
-  private pointsBackup: Vector2[] = []
+  private pointsBackup: Vector[] = []
   // точка, которую двигают
   private hoveredPointIndex = -1
 
   abstract draw(ctx: CanvasRenderingContext2D): void
-  abstract onMouseDown(coords: Vector2): void
-  abstract onMouseMove(coords: Vector2): void
-  abstract onMouseUp(coords: Vector2): void
+  abstract onMouseDown(coords: Vector): void
+  abstract onMouseMove(coords: Vector): void
+  abstract onMouseUp(coords: Vector): void
   //abstract onMouseAction(action: number, coord: Coord2d): void;
 
   constructor(properties: ShapeProperties) {
     this.properties = properties
   }
 
-  public isHoveredByPoint(mouseCords: Vector2): boolean {
+  public isHoveredByPoint(mouseCords: Vector): boolean {
     this.hoveredPointIndex = this.getPointIndexByCoord(mouseCords)
     this.isHovered = this.isPointOnLine(mouseCords)
     return this.hoveredPointIndex !== -1
@@ -61,7 +61,7 @@ export abstract class Shape {
     return false;
   }
 
-  public isPointOnLine(point: Vector2): boolean {
+  public isPointOnLine(point: Vector): boolean {
     for (let idx = 0; idx < this.points.length; idx++) {
       const lineStart = this.points[idx]
       const lineEnd = this.points[(idx + 1) % this.points.length]
@@ -80,26 +80,26 @@ export abstract class Shape {
     return false
   }
 
-  public beginMove(startPoint: Vector2) {
+  public beginMove(startPoint: Vector) {
     this.startMovePoint = startPoint
     this.pointsBackup = JSON.parse(JSON.stringify(this.points))
     this.movePointIndex = this.getPointIndexByCoord(startPoint)
     this.isMoving = true
   }
 
-  public move(coord: Vector2) {
+  public move(coord: Vector) {
     if (this.isMoving == false || this.startMovePoint === null) {
       return
     }
     if (this.movePointIndex == -1) {
       for (let i = 0; i < this.points.length; i++) {
-        this.points[i] = new Vector2(
+        this.points[i] = new Vector(
           this.pointsBackup[i].x + coord.x - this.startMovePoint.x,
           this.pointsBackup[i].y + coord.y - this.startMovePoint.y
         )
       }
     } else {
-      this.points[this.movePointIndex] = new Vector2(
+      this.points[this.movePointIndex] = new Vector(
         this.pointsBackup[this.movePointIndex].x + coord.x - this.startMovePoint.x,
         this.pointsBackup[this.movePointIndex].y + coord.y - this.startMovePoint.y
       )
@@ -112,7 +112,7 @@ export abstract class Shape {
   }
 
   // Получение индекса точки по указаным координатам
-  protected getPointIndexByCoord(coord: Vector2) {
+  protected getPointIndexByCoord(coord: Vector) {
     for (let i = 0; i < this.points.length; i++) {
       const dist = this.points[i].distance(coord)
       if (dist < 5) {

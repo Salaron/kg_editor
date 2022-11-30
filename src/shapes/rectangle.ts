@@ -1,9 +1,9 @@
-import { Vector2 } from "@/core/vector2"
+import { Vector } from "@/core/vector"
 import { ShapeProperties } from "@/core/shapeProperties"
 import { Shape } from "./shape"
 
 export class Rectangle extends Shape {
-  constructor(properties: ShapeProperties, start: Vector2, end?: Vector2) {
+  constructor(properties: ShapeProperties, start: Vector, end?: Vector) {
     super(properties)
     this.updatePoints(start, end ?? start)
     this.isDrawingFinished = false
@@ -28,18 +28,18 @@ export class Rectangle extends Shape {
     this.drawPointCoordinates(ctx)
   }
 
-  public onMouseDown(coords: Vector2): void {
+  public onMouseDown(coords: Vector): void {
     this.updatePoints(this.points[0], coords)
     this.isDrawingFinished = true
   }
 
-  public onMouseMove(coords: Vector2): void {
+  public onMouseMove(coords: Vector): void {
     this.updatePoints(this.points[0], coords)
   }
 
-  public onMouseUp(coords: Vector2): void { }
+  public onMouseUp(coords: Vector): void { }
 
-  private updatePoints(start: Vector2, end: Vector2) {
-    this.points = [start, new Vector2(end.x, start.y), end, new Vector2(start.x, end.y)]
+  private updatePoints(start: Vector, end: Vector) {
+    this.points = [start, new Vector(end.x, start.y), end, new Vector(start.x, end.y)]
   }
 }

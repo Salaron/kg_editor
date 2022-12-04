@@ -47,7 +47,7 @@ async function openMorphingDialog(
   const scaleX = morphingCanvas.offsetWidth / canvasWidth
   const scaleY = height.value / canvasHeight
   for (const shape of [shapeFrom, shapeTo]) {
-    shape.points = new Operations(shape.points).scale(scaleX, scaleY).finish()
+    shape.points = new Operations(shape.points).scale(scaleX, scaleY, 1).finish()
     shape.isSelected = false
   }
 

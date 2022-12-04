@@ -1,4 +1,4 @@
 export enum EditorMode {
   Drawing,
-  Selecting
+  Selecting,
 }

@@ -9,6 +9,7 @@ import { deepClone } from "@/util/object"
 
 export abstract class Shape {
   public shapeId = uuidv4()
+  public abstract shapeTypeId: number
   public isDrawingFinished = false
   public points: Vector[] = []
 
@@ -45,18 +46,26 @@ export abstract class Shape {
   }
 
   public draw3d(scene: THREE.Scene) {
-    const material = new THREE.LineBasicMaterial({ color: this.isHovered || this.isSelected ? this.properties.hoverColor : this.properties.shapeColor, linewidth: this.properties.lineWidth })
-    const points = this.points.map(p => {
-      return new THREE.Vector3(p.purePoints[0], p.purePoints[1] * -1, p.purePoints[2])
+    const material = new THREE.LineBasicMaterial({
+      color:
+        this.isHovered || this.isSelected
+          ? this.properties.hoverColor
+          : this.properties.shapeColor,
+      linewidth: this.properties.lineWidth,
+    })
+    const points = this.points.map((p) => {
+      return new THREE.Vector3(
+        p.purePoints[0],
+        p.purePoints[1] * -1,
+        p.purePoints[2]
+      )
     })
 
     const geometry = new THREE.BufferGeometry().setFromPoints(points)
 
     let object = null
-    if (this instanceof Line)
-      object = new THREE.Line(geometry, material)
-    else
-      object = new THREE.LineLoop(geometry, material)
+    if (this instanceof Line) object = new THREE.Line(geometry, material)
+    else object = new THREE.LineLoop(geometry, material)
 
     scene.add(object)
   }
@@ -72,13 +81,20 @@ export abstract class Shape {
     const point2 = rec.points[2]
 
     for (const shapePoint of this.points) {
-      if (point1.x < shapePoint.x && shapePoint.x < point2.x && point1.y < shapePoint.y && shapePoint.y < point2.y ||
-        point2.x < shapePoint.x && shapePoint.x < point1.x && point2.y < shapePoint.y && shapePoint.y < point1.y
+      if (
+        (point1.x < shapePoint.x &&
+          shapePoint.x < point2.x &&
+          point1.y < shapePoint.y &&
+          shapePoint.y < point2.y) ||
+        (point2.x < shapePoint.x &&
+          shapePoint.x < point1.x &&
+          point2.y < shapePoint.y &&
+          shapePoint.y < point1.y)
       )
-        return true;
+        return true
     }
 
-    return false;
+    return false
   }
 
   public isPointOnLine(point: Vector): boolean {
@@ -91,10 +107,10 @@ export abstract class Shape {
       const endtoPoint = lineEnd.distance(point)
       const startToEnd = lineStart.distance(lineEnd)
 
-      const isPointOnLine = Math.abs(startToCoord + endtoPoint - startToEnd) < maxDelta
+      const isPointOnLine =
+        Math.abs(startToCoord + endtoPoint - startToEnd) < maxDelta
 
-      if (isPointOnLine)
-        return true
+      if (isPointOnLine) return true
     }
 
     return false
@@ -121,8 +137,12 @@ export abstract class Shape {
       }
     } else {
       this.points[this.movePointIndex] = new Vector(
-        this.pointsBackup[this.movePointIndex].x + coord.x - this.startMovePoint.x,
-        this.pointsBackup[this.movePointIndex].y + coord.y - this.startMovePoint.y,
+        this.pointsBackup[this.movePointIndex].x +
+          coord.x -
+          this.startMovePoint.x,
+        this.pointsBackup[this.movePointIndex].y +
+          coord.y -
+          this.startMovePoint.y,
         this.points[this.movePointIndex].z
       )
     }
@@ -157,17 +177,23 @@ export abstract class Shape {
   }
 
   protected drawPointCoordinates(ctx: CanvasRenderingContext2D) {
-    if (!this.isHovered && !this.isSelected && this.isDrawingFinished || !this.showPointCoordinates)
+    if (
+      (!this.isHovered && !this.isSelected && this.isDrawingFinished) ||
+      !this.showPointCoordinates
+    )
       return
 
     for (const point of this.points) {
-      if (point == null)
-        return
+      if (point == null) return
 
       const convertedPoint = point.convertToScreen()
       ctx.fillStyle = "#000000"
       ctx.font = `${15 + 3 * this.properties.lineWidth}px serif`
-      ctx.fillText(`(${convertedPoint.x}; ${convertedPoint.y})`, point.x, point.y)
+      ctx.fillText(
+        `(${convertedPoint.x}; ${convertedPoint.y})`,
+        point.x,
+        point.y
+      )
     }
 
     if (this.showLineEquation) {

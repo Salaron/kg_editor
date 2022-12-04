@@ -6,7 +6,7 @@ const canvas: Ref<HTMLCanvasElement | null> = ref(null)
 let shapeManager: ShapeManager | null = null
 
 function waitMounted() {
-  return new Promise(res => {
+  return new Promise((res) => {
     const interval = setInterval(() => {
       if (isMounted) {
         clearInterval(interval)
@@ -25,9 +25,15 @@ function initialize(manager: ShapeManager, readonly = false) {
   window.addEventListener("resize", shapeManager.updateSize)
 
   if (!readonly) {
-    canvas.value!.addEventListener("mousemove", (ev) => shapeManager!.onMouseAction(ev, 0))
-    canvas.value!.addEventListener("mousedown", (ev) => shapeManager!.onMouseAction(ev, 1))
-    canvas.value!.addEventListener("mouseup", (ev) => shapeManager!.onMouseAction(ev, 2))
+    canvas.value!.addEventListener("mousemove", (ev) =>
+      shapeManager!.onMouseAction(ev, 0)
+    )
+    canvas.value!.addEventListener("mousedown", (ev) =>
+      shapeManager!.onMouseAction(ev, 1)
+    )
+    canvas.value!.addEventListener("mouseup", (ev) =>
+      shapeManager!.onMouseAction(ev, 2)
+    )
   }
 
   window.dispatchEvent(new Event("resize"))
@@ -40,8 +46,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  if (shapeManager === null)
-    return
+  if (shapeManager === null) return
 
   window.removeEventListener("resize", shapeManager!.updateSize)
 })

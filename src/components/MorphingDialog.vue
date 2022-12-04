@@ -12,7 +12,9 @@ import { ref, watch } from "vue"
 const height = ref(innerHeight * 0.5)
 
 const dialog = ref<InstanceType<typeof ModalDialog> | null>(null)
-const morphingCanvasComponent = ref<InstanceType<typeof CanvasComponent> | null>(null)
+const morphingCanvasComponent = ref<InstanceType<
+  typeof CanvasComponent
+> | null>(null)
 
 let morphing = ref("0")
 let shapeManager: ShapeManager | null = null
@@ -22,19 +24,22 @@ let destPointsO: Vector[] = []
 let basePoints: Vector[] = []
 let destinationPoints: Vector[] = []
 function drawMorphingShape(context: CanvasRenderingContext2D) {
-  if (!shapeManager || !morphingShape)
-    return
+  if (!shapeManager || !morphingShape) return
 
   morphingShape.draw(context)
 }
 
-async function openMorphingDialog(canvasWidth: number, canvasHeight: number, shapeFrom: Shape, shapeTo: Shape) {
+async function openMorphingDialog(
+  canvasWidth: number,
+  canvasHeight: number,
+  shapeFrom: Shape,
+  shapeTo: Shape
+) {
   dialog.value?.open()
   morphing.value = "0"
   await morphingCanvasComponent.value?.waitMounted()
   const morphingCanvas = morphingCanvasComponent.value?.getCanvasElement()
-  if (!morphingCanvas)
-    return
+  if (!morphingCanvas) return
 
   basePointsO = deepClone(shapeFrom.points)
   destPointsO = deepClone(shapeTo.points)
@@ -47,13 +52,18 @@ async function openMorphingDialog(canvasWidth: number, canvasHeight: number, sha
   }
 
   morphingShape = deepClone(shapeFrom)
-  morphingShape.properties = new ShapeProperties("#00FF00", shapeFrom.properties.lineWidth, shapeFrom.properties.fillColorHex, shapeFrom.properties.alpha)
+  morphingShape.properties = new ShapeProperties(
+    "#00FF00",
+    shapeFrom.properties.lineWidth,
+    shapeFrom.properties.fillColorHex,
+    shapeFrom.properties.alpha
+  )
   basePoints = deepClone(shapeFrom.points)
   destinationPoints = deepClone(shapeTo.points)
 
   shapeManager = new ShapeManager(morphingCanvas?.getContext("2d")!, {
     onUpdate: drawMorphingShape,
-    shapes: [shapeFrom, shapeTo]
+    shapes: [shapeFrom, shapeTo],
   })
 
   morphingCanvasComponent.value?.initialize(shapeManager, true)
@@ -62,11 +72,13 @@ async function openMorphingDialog(canvasWidth: number, canvasHeight: number, sha
 const emit = defineEmits(["morphingDialogClosed"])
 
 function onSave() {
-  if (!morphingShape)
-    return
+  if (!morphingShape) return
 
   const resultShape = deepClone(morphingShape)
-  resultShape.points = new Operations(basePointsO).morphing(destPointsO, parseFloat(morphing.value)).round().finish()
+  resultShape.points = new Operations(basePointsO)
+    .morphing(destPointsO, parseFloat(morphing.value))
+    .round()
+    .finish()
 
   emit("morphingDialogClosed", resultShape)
   dispose()
@@ -80,24 +92,40 @@ function dispose() {
   dialog.value?.close()
 }
 
-watch(morphing, value => {
-  if (!morphingShape)
-    return;
+watch(morphing, (value) => {
+  if (!morphingShape) return
 
-  morphingShape.points = new Operations(deepClone(basePoints)).morphing(destinationPoints, parseFloat(value)).finish()
+  morphingShape.points = new Operations(deepClone(basePoints))
+    .morphing(destinationPoints, parseFloat(value))
+    .finish()
 })
 
 defineExpose({ openMorphingDialog })
 </script>
 
 <template>
-  <ModalDialog ref="dialog" :on-save="onSave" :on-cancel="dispose" :full-width="true">
+  <ModalDialog
+    ref="dialog"
+    :on-save="onSave"
+    :on-cancel="dispose"
+    :full-width="true"
+  >
     <template #title> Морфинг </template>
     <template #body>
-      <CanvasComponent ref="morphingCanvasComponent" :style="{ height: height + 'px' }" />
+      <CanvasComponent
+        ref="morphingCanvasComponent"
+        :style="{ height: height + 'px' }"
+      />
 
       <label>Морфинг</label>
-      <input v-model="morphing" type="range" min="0" max="1" step="0.01" class="ml-2" />
+      <input
+        v-model="morphing"
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        class="ml-2"
+      />
     </template>
   </ModalDialog>
 </template>

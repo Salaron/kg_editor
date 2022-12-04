@@ -6,7 +6,12 @@ export class ShapeProperties {
 
   public _fillColorHex!: string
 
-  constructor(shapeColor: string, lineWidth: number, fillColor: string, alpha?: string) {
+  constructor(
+    shapeColor: string,
+    lineWidth: number,
+    fillColor: string,
+    alpha?: string
+  ) {
     this.shapeColor = shapeColor
     this.lineWidth = lineWidth
 
@@ -19,12 +24,19 @@ export class ShapeProperties {
   }
 
   public createCopy() {
-    return new ShapeProperties(this.shapeColor, this.lineWidth, this.fillColorHex, this.alpha)
+    return new ShapeProperties(
+      this.shapeColor,
+      this.lineWidth,
+      this.fillColorHex,
+      this.alpha
+    )
   }
 
   public get fillColorRgba() {
     const color = this.hexToRgb(this._fillColorHex)!
-    return `rgba(${color.r}, ${color.g}, ${color.b}, ${1 - parseFloat(this.alpha)})`
+    return `rgba(${color.r}, ${color.g}, ${color.b}, ${
+      1 - parseFloat(this.alpha)
+    })`
   }
 
   public get fillColorHex() {
@@ -33,7 +45,11 @@ export class ShapeProperties {
 
   public set fillColorRgba(rgba: string) {
     const r = /^rgba\(([\d]+)\, ([\d]+)\, ([\d]+)\, ([\d]+)\)$/i.exec(rgba)!
-    const hex = "#" + this.componentToHex(r[1]) + this.componentToHex(r[2]) + this.componentToHex(r[3])
+    const hex =
+      "#" +
+      this.componentToHex(r[1]) +
+      this.componentToHex(r[2]) +
+      this.componentToHex(r[3])
     this._fillColorHex = hex
     this.alpha = (parseInt(r[4]) / 255).toString()
   }
@@ -48,7 +64,7 @@ export class ShapeProperties {
       ? {
           r: parseInt(result[1], 16),
           g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16)
+          b: parseInt(result[3], 16),
         }
       : null
   }
@@ -59,4 +75,9 @@ export class ShapeProperties {
   }
 }
 
-export const defaultShapeProperties = new ShapeProperties("#0000ff", 1, "#00ffff", "1")
+export const defaultShapeProperties = new ShapeProperties(
+  "#0000ff",
+  1,
+  "#00ffff",
+  "1"
+)

@@ -2,10 +2,10 @@ import { Vector } from "../core/vector"
 
 function gcd(a: number, b: number): number {
   if (!b) {
-    return a;
+    return a
   }
 
-  return gcd(b, a % b);
+  return gcd(b, a % b)
 }
 
 export function constructLineEquation(point1: Vector, point2: Vector) {
@@ -18,7 +18,7 @@ export function constructLineEquation(point1: Vector, point2: Vector) {
   let cString = ""
 
   try {
-    const g = [A, B, C].filter(val => val != 0).reduce(gcd)
+    const g = [A, B, C].filter((val) => val != 0).reduce(gcd)
     A /= g
     B /= g
     C /= g
@@ -33,14 +33,14 @@ export function constructLineEquation(point1: Vector, point2: Vector) {
 
     if (B !== 0) {
       if (Math.abs(B) != 1) {
-        bString = (A != 0 && B > 0 ? "+" : "") + B + "y";
+        bString = (A != 0 && B > 0 ? "+" : "") + B + "y"
       } else {
         bString = A != 0 && B > 0 ? "+y" : "y"
       }
     }
 
     if (C !== 0) {
-      cString += (A != 0 || B != 0) && C > 0 ? "+" + C : C;
+      cString += (A != 0 || B != 0) && C > 0 ? "+" + C : C
     }
   } catch (err) {
     if (err instanceof TypeError) {

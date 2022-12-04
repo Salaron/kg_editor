@@ -5,5 +5,3 @@ import Editor from "./view/Editor.vue"
 <template>
   <Editor />
 </template>
-
-

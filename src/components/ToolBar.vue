@@ -3,7 +3,13 @@ import LineIcon from "@/components/icons/LineIcon.vue"
 import PolygonIcon from "@/components/icons/PolygonIcon.vue"
 import RectangleIcon from "@/components/icons/RectangleIcon.vue"
 import TriangleIcon from "@/components/icons/TriangleIcon.vue"
-import { PencilIcon, PlusIcon, TrashIcon, ArrowDownIcon, ArrowUpIcon } from "@heroicons/vue/24/solid"
+import {
+  PencilIcon,
+  PlusIcon,
+  TrashIcon,
+  ArrowDownIcon,
+  ArrowUpIcon,
+} from "@heroicons/vue/24/solid"
 
 import { EditorMode } from "@/core/editorMode"
 import { Line } from "@/shapes/line"
@@ -11,12 +17,24 @@ import { Polygon } from "@/shapes/polygon"
 import { Rectangle } from "@/shapes/rectangle"
 import { Triangle } from "@/shapes/triangle"
 
-const emit = defineEmits(["clearCanvas", "onToolChange", "onModeChange", "saveConfig", "loadConfig"])
-function setActive(ev: MouseEvent, eventName: "clearCanvas" | "onToolChange" | "onModeChange", arg: any) {
+const emit = defineEmits([
+  "clearCanvas",
+  "onToolChange",
+  "onModeChange",
+  "saveConfig",
+  "loadConfig",
+])
+function setActive(
+  ev: MouseEvent,
+  eventName: "clearCanvas" | "onToolChange" | "onModeChange",
+  arg: any
+) {
   let selector = ".mode"
-  if (eventName.indexOf("Mode") === -1) { selector = ".tool" }
+  if (eventName.indexOf("Mode") === -1) {
+    selector = ".tool"
+  }
 
-  document.querySelectorAll(selector).forEach(element => {
+  document.querySelectorAll(selector).forEach((element) => {
     element.classList.remove("button-active")
   })
 
@@ -29,23 +47,41 @@ function setActive(ev: MouseEvent, eventName: "clearCanvas" | "onToolChange" | "
 
 <template>
   <div class="flex flex-auto pt-1">
-    <div class="mode button button-active" @click="setActive($event, 'onModeChange', EditorMode.Drawing)">
+    <div
+      class="mode button button-active"
+      @click="setActive($event, 'onModeChange', EditorMode.Drawing)"
+    >
       <PlusIcon aria-hidden="true" />
     </div>
-    <div class="mode button" @click="setActive($event, 'onModeChange', EditorMode.Selecting)">
+    <div
+      class="mode button"
+      @click="setActive($event, 'onModeChange', EditorMode.Selecting)"
+    >
       <PencilIcon aria-hidden="true" />
     </div>
     <div class="separator"></div>
-    <div class="tool button button-active" @click="setActive($event, 'onToolChange', Line)">
+    <div
+      class="tool button button-active"
+      @click="setActive($event, 'onToolChange', Line)"
+    >
       <LineIcon />
     </div>
-    <div class="tool button" @click="setActive($event, 'onToolChange', Triangle)">
+    <div
+      class="tool button"
+      @click="setActive($event, 'onToolChange', Triangle)"
+    >
       <TriangleIcon />
     </div>
-    <div class="tool button" @click="setActive($event, 'onToolChange', Rectangle)">
+    <div
+      class="tool button"
+      @click="setActive($event, 'onToolChange', Rectangle)"
+    >
       <RectangleIcon />
     </div>
-    <div class="tool button" @click="setActive($event, 'onToolChange', Polygon)">
+    <div
+      class="tool button"
+      @click="setActive($event, 'onToolChange', Polygon)"
+    >
       <PolygonIcon />
     </div>
     <div class="separator"></div>
@@ -60,7 +96,6 @@ function setActive(ev: MouseEvent, eventName: "clearCanvas" | "onToolChange" | "
     </div>
   </div>
 </template>
-
 
 <style scoped>
 .button {

@@ -3,6 +3,8 @@ import { ShapeProperties } from "@/core/shapeProperties"
 import { Shape } from "./shape"
 
 export class Triangle extends Shape {
+  public override shapeTypeId = 2
+
   constructor(properties: ShapeProperties, start: Vector) {
     super(properties)
     this.points.push(start)
@@ -18,7 +20,10 @@ export class Triangle extends Shape {
     }
     ctx.closePath()
 
-    ctx.strokeStyle = this.isHovered || this.isSelected ? this.properties.hoverColor : this.properties.shapeColor
+    ctx.strokeStyle =
+      this.isHovered || this.isSelected
+        ? this.properties.hoverColor
+        : this.properties.shapeColor
     ctx.lineWidth = this.properties.lineWidth
     ctx.stroke()
 
@@ -29,7 +34,7 @@ export class Triangle extends Shape {
     this.drawPointCoordinates(ctx)
   }
 
-  public onMouseDown(coords: Vector): void { }
+  public onMouseDown(coords: Vector): void {}
 
   public onMouseMove(coords: Vector): void {
     this.points[this.points.length - 1] = coords

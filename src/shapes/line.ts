@@ -3,6 +3,7 @@ import { ShapeProperties } from "@/core/shapeProperties"
 import { Shape } from "./shape"
 
 export class Line extends Shape {
+  public override shapeTypeId = 1
   public override showLineEquation = false
 
   constructor(properties: ShapeProperties, start?: Vector, end?: Vector) {
@@ -15,13 +16,15 @@ export class Line extends Shape {
   }
 
   public draw(ctx: CanvasRenderingContext2D) {
-    if (this.points.length < 2)
-      return;
+    if (this.points.length < 2) return
 
     ctx.beginPath()
     ctx.moveTo(this.points[0].x, this.points[0].y)
     ctx.lineTo(this.points[1].x, this.points[1].y)
-    ctx.strokeStyle = this.isHovered || this.isSelected ? this.properties.hoverColor : this.properties.shapeColor
+    ctx.strokeStyle =
+      this.isHovered || this.isSelected
+        ? this.properties.hoverColor
+        : this.properties.shapeColor
     ctx.lineWidth = this.properties.lineWidth
     ctx.stroke()
     ctx.closePath()
@@ -48,7 +51,10 @@ export class Line extends Shape {
       this.points[1].y - headlen * Math.sin(angle + Math.PI / 6)
     )
 
-    ctx.strokeStyle = this.isHovered || this.isSelected ? this.properties.hoverColor : this.properties.shapeColor
+    ctx.strokeStyle =
+      this.isHovered || this.isSelected
+        ? this.properties.hoverColor
+        : this.properties.shapeColor
     ctx.lineWidth = this.properties.lineWidth
     ctx.stroke()
     ctx.closePath()
@@ -63,5 +69,5 @@ export class Line extends Shape {
     this.points[1] = coords
   }
 
-  public onMouseUp(coords: Vector): void { }
+  public onMouseUp(coords: Vector): void {}
 }

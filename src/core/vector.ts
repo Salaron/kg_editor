@@ -1,10 +1,11 @@
 import { ProjectionMode } from "./projectionMode"
 import { ShapeManager } from "./shapeManager"
 
+// класс -- жуткий костыль для работы 3д, но что поделать)
 export class Vector {
   public purePoints: number[] = []
 
-  constructor(x: number, y: number, z: number = 0, purePoints: number[] = []) {
+  constructor(x: number, y: number, z = 0, purePoints: number[] = []) {
     if (purePoints.length === 0) {
       if (ShapeManager.projectionMode == ProjectionMode.XY) {
         this.purePoints = [x, y, z]
@@ -30,8 +31,7 @@ export class Vector {
   public set x(value: number) {
     if (ShapeManager.projectionMode == ProjectionMode.YZ)
       this.purePoints[1] = value
-    else
-      this.purePoints[0] = value
+    else this.purePoints[0] = value
   }
 
   public get y() {
@@ -43,8 +43,7 @@ export class Vector {
   public set y(value: number) {
     if (ShapeManager.projectionMode != ProjectionMode.XY)
       this.purePoints[2] = value
-    else
-      this.purePoints[1] = value
+    else this.purePoints[1] = value
   }
 
   public get z() {
@@ -60,15 +59,26 @@ export class Vector {
       this.purePoints[1] = value
   }
 
-
   public convertToScreen() {
     if (ShapeManager.projectionMode == ProjectionMode.XY) {
-      return new Vector(this.purePoints[0], this.purePoints[1] * -1, this.purePoints[2])
+      return new Vector(
+        this.purePoints[0],
+        this.purePoints[1] * -1,
+        this.purePoints[2]
+      )
     }
     if (ShapeManager.projectionMode == ProjectionMode.XZ) {
-      return new Vector(this.purePoints[0], this.purePoints[1] * -1, this.purePoints[2])
+      return new Vector(
+        this.purePoints[0],
+        this.purePoints[1] * -1,
+        this.purePoints[2]
+      )
     }
-    return new Vector(this.purePoints[0], this.purePoints[1] * -1, this.purePoints[2])
+    return new Vector(
+      this.purePoints[0],
+      this.purePoints[1] * -1,
+      this.purePoints[2]
+    )
   }
 
   public convertToSystem() {
@@ -80,6 +90,15 @@ export class Vector {
   }
 
   public distance(anotherPoint: Vector) {
-    return Math.sqrt(Math.pow(anotherPoint.x - this.x, 2) + Math.pow(anotherPoint.y - this.y, 2))
+    return Math.sqrt(
+      Math.pow(anotherPoint.x - this.x, 2) +
+        Math.pow(anotherPoint.y - this.y, 2)
+    )
+  }
+
+  public toJSON() {
+    return {
+      purePoints: this.purePoints,
+    }
   }
 }

@@ -3,6 +3,8 @@ import { ShapeProperties } from "@/core/shapeProperties"
 import { Shape } from "./shape"
 
 export class Rectangle extends Shape {
+  public override shapeTypeId = 3
+
   constructor(properties: ShapeProperties, start: Vector, end?: Vector) {
     super(properties)
     this.updatePoints(start, end ?? start)
@@ -17,7 +19,10 @@ export class Rectangle extends Shape {
     }
     ctx.closePath()
 
-    ctx.strokeStyle = this.isHovered || this.isSelected ? this.properties.hoverColor : this.properties.shapeColor
+    ctx.strokeStyle =
+      this.isHovered || this.isSelected
+        ? this.properties.hoverColor
+        : this.properties.shapeColor
     ctx.lineWidth = this.properties.lineWidth
     ctx.stroke()
 
@@ -37,9 +42,14 @@ export class Rectangle extends Shape {
     this.updatePoints(this.points[0], coords)
   }
 
-  public onMouseUp(coords: Vector): void { }
+  public onMouseUp(coords: Vector): void {}
 
   private updatePoints(start: Vector, end: Vector) {
-    this.points = [start, new Vector(end.x, start.y), end, new Vector(start.x, end.y)]
+    this.points = [
+      start,
+      new Vector(end.x, start.y),
+      end,
+      new Vector(start.x, end.y),
+    ]
   }
 }

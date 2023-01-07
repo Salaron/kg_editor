@@ -152,4 +152,16 @@ export class Operations {
 
     return this
   }
+
+  public projection(p: number, q: number, s: number) {
+    for (let i = 0; i < this.points.length; i++) {
+      const point = this.points[i]
+
+      const x = point.x / (point.x * p + point.y * q + point.z * s)
+      const y = point.y / (point.x * p + point.y * q + point.z * s)
+      const z = point.z / (point.x * p + point.y * q + point.z * s)
+
+      this.points[i] = new Vector(0, 0, 0, [x, y, z])
+    }
+  }
 }

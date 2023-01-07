@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CanvasComponent from "@/components/CanvasComponent.vue"
 import FractalTreeDialog from "@/components/FractalTreeDialog.vue"
+import TrimetricOperationDialog from "@/components/TrimetricOperationDialog.vue"
 import MorphingDialog from "@/components/MorphingDialog.vue"
 import OperationsDialog from "@/components/OperationsDialog.vue"
 import PropertiesSidebar from "@/components/PropertiesSidebar.vue"
@@ -36,6 +37,9 @@ const fractalTreeDialogComponent = ref<InstanceType<
 const morphingDialogComponent = ref<InstanceType<typeof MorphingDialog> | null>(
   null
 )
+const trimetricDialogComponent = ref<InstanceType<
+  typeof TrimetricOperationDialog
+> | null>(null)
 const threeJsPortalComponent: Ref<InstanceType<typeof ThreeJsPortal> | null> =
   ref(null)
 
@@ -44,7 +48,7 @@ onMounted(() => {
   if (!mainCanvasComponent.value || !statusBarComponent.value) return
 
   const canvas = mainCanvasComponent.value?.getCanvasElement()
-  shapeManager = new ShapeManager(canvas?.getContext("2d")!, {
+  shapeManager = new ShapeManager(canvas!.getContext("2d")!, {
     onStatusMouseMove: statusBarComponent.value.update,
     onShapePropertiesChanged: propertiesComponent.value?.updateShapeProperty,
     onShapeSelectedStatus: propertiesComponent.value?.updateShapeSelectedStatus,
@@ -154,6 +158,35 @@ async function openMorphingDialog() {
   )
 }
 
+async function openTrimetric() {
+  if (
+    !morphingDialogComponent.value ||
+    !shapeManager ||
+    !mainCanvasComponent.value
+  )
+    return
+
+  const canvasElement = mainCanvasComponent.value.getCanvasElement()
+  const shapesCopy = deepClone(shapeManager.shapes)
+
+  await trimetricDialogComponent.value!.openOperationsDialog(
+    canvasElement.offsetWidth,
+    height.value,
+    shapesCopy
+  )
+}
+
+function trimetricClosed(shapes: Shape[]) {
+  if (!shapeManager) return
+
+  const newShapes = shapeManager.shapes.map((shape, index) => {
+    shape.points = deepClone(shapes[index].points)
+    return shape
+  })
+
+  shapeManager.shapes = newShapes
+}
+
 function morphingDialogClosed(morphingShape: Shape) {
   if (!shapeManager) return
 
@@ -189,15 +222,18 @@ async function saveConfig() {
 async function loadConfig() {
   if (!shapeManager) return
 
-  shapeManager.clear()
-
   const filePicker = await window.showOpenFilePicker()
   const file = await filePicker[0].getFile()
   const fileText = await file.text()
   const shapes = JSON.parse(fileText).map((s: any) => {
     return ShapeFactory.create(s)
   })
-  shapeManager.shapes = shapes
+  if (shapes.length > 0) {
+    shapeManager.clear()
+    shapeManager.shapes = shapes
+  } else {
+    alert("Неправильный файл")
+  }
 }
 </script>
 
@@ -212,6 +248,7 @@ async function loadConfig() {
     ref="morphingDialogComponent"
     @morphing-dialog-closed="morphingDialogClosed"
   />
+  <TrimetricOperationDialog ref="trimetricDialogComponent" @trimetric-dialog-closed="trimetricClosed"/>
 
   <div class="mainContainer pl-2 pr-2">
     <ToolBar
@@ -232,6 +269,7 @@ async function loadConfig() {
         @create-spline="createSpline"
         @morphing="openMorphingDialog"
         @toggle3d="toggle3d"
+        @trimetric="openTrimetric"
       />
     </div>
 

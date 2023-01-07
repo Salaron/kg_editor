@@ -21,6 +21,7 @@ const emit = defineEmits([
   "createSpline",
   "morphing",
   "toggle3d",
+  "trimetric"
 ])
 
 watch(
@@ -160,6 +161,15 @@ defineExpose({
         @click="$emit('openFractalTree')"
       >
         Фрактальное дерево
+      </button>
+    </div>
+
+    <div class="param">
+      <button
+        class="w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-black focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-indigo-500 hover:bg-indigo-400"
+        @click="$emit('trimetric')"
+      >
+        Триметрическая проекция
       </button>
     </div>
 

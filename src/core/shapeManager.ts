@@ -64,6 +64,7 @@ export class ShapeManager {
 
   public clear() {
     this.shapes = []
+    this.focusedShapes.clear()
     this.drawingShape = null
   }
 

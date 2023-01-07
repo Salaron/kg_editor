@@ -89,6 +89,10 @@ export class Vector {
     return `(${this.purePoints[0]}, ${this.purePoints[1]}, ${this.purePoints[2]})`
   }
 
+  public toArray() {
+    return [this.x, this.y, this.z]
+  }
+
   public distance(anotherPoint: Vector) {
     return Math.sqrt(
       Math.pow(anotherPoint.x - this.x, 2) +

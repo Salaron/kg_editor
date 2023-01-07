@@ -97,6 +97,25 @@ const operationsDefaultValue = [
       value: false,
     },
   },
+  {
+    id: 6,
+    name: "Проецирование",
+    param1: {
+      type: "text",
+      text: "Проецирование на Х",
+      value: 0,
+    },
+    param2: {
+      type: "text",
+      text: "Процирование на Y",
+      value: 0,
+    },
+    param3: {
+      type: "text",
+      text: "Процирование на Z",
+      value: 0,
+    },
+  },
 ]
 const operations = ref(deepClone(operationsDefaultValue))
 const morphing = ref(1)
@@ -142,7 +161,7 @@ async function openOperationsDialog(
     )
     return shape
   })
-  shapeManager = new ShapeManager(operationsCanvas?.getContext("2d")!, {
+  shapeManager = new ShapeManager(operationsCanvas!.getContext("2d")!, {
     shapes,
     onUpdate: drawPreview,
   })
@@ -252,85 +271,50 @@ defineExpose({ openOperationsDialog })
 </script>
 
 <template>
-  <ModalDialog
-    ref="dialog"
-    :on-save="onSave"
-    :on-cancel="onCancel"
-    :full-width="true"
-  >
+  <ModalDialog ref="dialog" :on-save="onSave" :on-cancel="onCancel" :full-width="true">
     <template #title> Операции </template>
     <template #body>
-      <CanvasComponent
-        ref="operationsCanvasComponent"
-        :style="{ height: height + 'px' }"
-      />
+      <CanvasComponent ref="operationsCanvasComponent" :style="{ height: height + 'px' }" />
 
       <label>Превью</label>
-      <input
-        v-model="morphing"
-        type="range"
-        min="0"
-        max="1"
-        step="0.01"
-        class="ml-2"
-      />
+      <input v-model="morphing" type="range" min="0" max="1" step="0.01" class="ml-2" />
 
-      <draggable
-        v-bind="dragOptions"
-        v-model="operations"
-        class="list-group"
-        :component-data="{
-          type: 'transition-group',
-          name: !drag ? 'flip-list' : null,
-        }"
-        item-key="id"
-        @start="drag = true"
-        @end="drag = false"
-      >
+      <draggable v-bind="dragOptions" v-model="operations" class="list-group" :component-data="{
+  type: 'transition-group',
+  name: !drag ? 'flip-list' : null,
+}" item-key="id" @start="drag = true" @end="drag = false">
         <template #item="{ element }">
           <Accordion :title="element.name">
             <template #body>
               <label class="block mb-2 text-base font-medium text-gray-900">{{
-                element.param1.text
-              }}</label>
-              <input
-                v-model="element.param1.value"
-                :type="element.param1.type"
-                :class="[
-                  element.param1.type === 'text'
-                    ? 'bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
-                    : '',
-                ]"
-              />
+    element.param1.text
+}}</label>
+              <input v-model="element.param1.value" :type="element.param1.type" :class="[
+  element.param1.type === 'text'
+    ? 'bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
+    : '',
+]" />
 
               <div v-if="element.param2" class="mt-2">
                 <label class="block mb-2 text-base font-medium text-gray-900">{{
-                  element.param2.text
-                }}</label>
-                <input
-                  v-model="element.param2.value"
-                  :type="element.param2.type"
-                  :class="[
-                    element.param2.type === 'text'
-                      ? 'bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
-                      : '',
-                  ]"
-                />
+    element.param2.text
+}}</label>
+                <input v-model="element.param2.value" :type="element.param2.type" :class="[
+  element.param2.type === 'text'
+    ? 'bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
+    : '',
+]" />
               </div>
 
               <div v-if="element.param3" class="mt-2">
                 <label class="block mb-2 text-base font-medium text-gray-900">{{
-                  element.param3.text
-                }}</label>
-                <input
-                  v-model="element.param3.value"
-                  :type="element.param3.type"
-                  :class="[
-                    element.param3.type === 'text'
-                      ? 'bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
-                      : '',
-                  ]"
-                />
+    element.param3.text
+}}</label>
+                <input v-model="element.param3.value" :type="element.param3.type" :class="[
+  element.param3.type === 'text'
+    ? 'bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
+    : '',
+]" />
               </div>
             </template>
           </Accordion>
